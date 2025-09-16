@@ -59,7 +59,7 @@ module.exports = {
  return;
  } catch (e) {
  console.error(e);
- return api.sendMessage('❌ Failed to download. Please try again later.', threadID, messageID);
+ return api.sendMessage('❌সরি বস ডাউনলোড করতে পারি নাই🥹 আবার চেষ্টা করো', threadID, messageID);
  }
  }
 
@@ -69,7 +69,7 @@ module.exports = {
 
  try {
  const searchResult = (await axios.get(`${await baseApiUrl()}/ytFullSearch?songName=${encodeURIComponent(keyWord)}`)).data.slice(0, 6);
- if (!searchResult.length) return api.sendMessage(`⭕ No results for keyword: ${keyWord}`, threadID, messageID);
+ if (!searchResult.length) return api.sendMessage(`⭕সার্চ কী তোর নানি দিবো🫩🐸🙏: ${keyWord}`, threadID, messageID);
 
  let msg = "";
  const thumbnails = [];
@@ -130,7 +130,7 @@ module.exports = {
  }, threadID, () => fs.unlinkSync(path), messageID);
  } catch (e) {
  console.error(e);
- return api.sendMessage('❌ Failed to download. Please try again later.', threadID, messageID);
+ return api.sendMessage('❌সরি বস ডাউনলোড করতে পারি নাই🥹 আবার চেষ্টা করো', threadID, messageID);
  }
  }
 
@@ -138,7 +138,7 @@ module.exports = {
  try {
  const { data } = await axios.get(`${await baseApiUrl()}/ytfullinfo?videoID=${videoID}`);
  await api.sendMessage({
- body: `✨ Title: ${data.title}\n⏳ Duration: ${(data.duration / 60).toFixed(2)} mins\n📺 Resolution: ${data.resolution}\n👀 Views: ${data.view_count}\n👍 Likes: ${data.like_count}\n💬 Comments: ${data.comment_count}\n📂 Category: ${data.categories[0]}\n📢 Channel: ${data.channel}\n🧍 Uploader ID: ${data.uploader_id}\n👥 Subscribers: ${data.channel_follower_count}\n🔗 Channel URL: ${data.channel_url}\n🔗 Video URL: ${data.webpage_url}`,
+ body: `🔰 𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁 🔰✨ Title: ${data.title}\n⏳ Duration: ${(data.duration / 60).toFixed(2)} mins\n📺 Resolution: ${data.resolution}\n👀 Views: ${data.view_count}\n👍 Likes: ${data.like_count}\n💬 Comments: ${data.comment_count}\n📂 Category: ${data.categories[0]}\n📢 Channel: ${data.channel}\n🧍 Uploader ID: ${data.uploader_id}\n👥 Subscribers: ${data.channel_follower_count}\n🔗 Channel URL: ${data.channel_url}\n🔗 Video URL: ${data.webpage_url}`,
  attachment: await streamImage(data.thumbnail, 'info_thumb.jpg')
  }, threadID, messageID);
  } catch (e) {
