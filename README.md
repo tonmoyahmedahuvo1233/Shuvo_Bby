@@ -24,7 +24,7 @@ src='https://i.imgur.com/LyHic3i.gif'/></a>
 
 # 🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰 - By Rahat islam
 
-A customized and powerful multi-purpose chatbot framework for Facebook Messenger, based on the original **GoatBot V2** by NTKhang. This version is tailored and improved by **Rahat islam** with additional integrations, command structure enhancements, and admin tools.
+A customized and powerful multi-purpose chatbot framework for Facebook Messenger, based on the original  by Ullash. This version is tailored and improved by **Rahat islam** with additional integrations, command structure enhancements, and admin tools.
 
 > ⚠️ This is a modified version. See License section below for usage rights.
 
