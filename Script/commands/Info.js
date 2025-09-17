@@ -1,23 +1,39 @@
-const fs = require("fs");
+const fs = require("fs-extra");
 const path = require("path");
 
 module.exports.config = {
-  name: "info",
-  version: "1.6.0",
-  hasPermssion: 0,
-  credits: "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐈𝐬𝐥𝐚𝐦",
-  description: "Bot information command",
-  commandCategory: "For users",
-  hide: true,
-  usages: "",
-  cooldowns: 5,
+    name: "info",
+    version: "1.2.6",
+    hasPermssion: 0,
+    credits: "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐈𝐬𝐥𝐚𝐦",
+    description: "Bot information command",
+    commandCategory: "For users",
+    hide: true,
+    usages: "",
+    cooldowns: 5,
 };
 
-module.exports.run = async function({ api, event }) {
-  const { threadID } = event;
+module.exports.run = async function ({ api, event, Users, Threads }) {
+    const { threadID } = event;
 
-  // info message
-  const msg = `┏━━━━━━━━━━━━━━━┓
+    // Root ফোল্ডার
+    const imagePath = path.join(__dirname, "..", "rahat1.png");
+
+    if (!fs.existsSync(imagePath)) {
+        return api.sendMessage("❌ Image not found!", threadID);
+    }
+
+    // Bot uptime
+    const uptime = process.uptime();
+    const hours = Math.floor(uptime / 3600);
+    const minutes = Math.floor((uptime % 3600) / 60);
+    const seconds = Math.floor(uptime % 60);
+
+    const totalUsers = global.data.allUserID.length;
+    const totalThreads = global.data.allThreadID.length;
+    const { commands } = global.client;
+
+    const msg = `┏━━━━━━━━━━━━━━━┓
 ┃   🌟 𝗢𝗪𝗡𝗘𝗥 𝗜𝗡𝗙𝗢 🌟    
 ┣━━━━━━━━━━━━━━━┫
 ┃👤 𝐍𝐚𝐦𝐞      :🔰𝗥𝗮𝗵𝗮𝘁🔰
@@ -35,28 +51,8 @@ module.exports.run = async function({ api, event }) {
 ┗━━━━━━━━━━━━━━━┛
 `;
 
-  // __dirname/rahat ফোল্ডার থেকে মিডিয়া 
-  const mediaFolder = path.join(__dirname, "rahat");
-
-  if (!fs.existsSync(mediaFolder)) {
-    return api.sendMessage("❌ rahat ফোল্ডার পাওয়া যায়নি!", threadID);
-  }
-
-  // শুধুমাত্র মিডিয়া ফাইল (.jpg, .png, .gif, .mp4)
-  const mediaFiles = fs.readdirSync(mediaFolder)
-    .filter(file => /\.(jpg|jpeg|png|gif|mp4)$/i.test(file))
-    .map(file => path.join(mediaFolder, file));
-
-  if (mediaFiles.length === 0) {
-    return api.sendMessage("❌ rahat ফোল্ডারে কোনো ছবি বা ভিডিও পাওয়া যায়নি!", threadID);
-  }
-
-  // র‍্যান্ডম একটি ফাইল নির্বাচন
-  const randomFile = mediaFiles[Math.floor(Math.random() * mediaFiles.length)];
-
-  // পাঠানো
-  api.sendMessage({
-    body: msg,
-    attachment: fs.createReadStream(randomFile)
-  }, threadID);
+    api.sendMessage({
+        body: msg,
+        attachment: fs.createReadStream(imagePath)
+    }, threadID);
 };
