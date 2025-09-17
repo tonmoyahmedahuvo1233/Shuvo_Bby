@@ -44,7 +44,7 @@ module.exports.run = async ({ api, args, event, commandName, message }) => {
  return api.sendMessage("❌ An error occurred:" + err.message, event.threadID, event.messageID);
  }
 
- if (result.length == 0) return api.sendMessage("⭕ No search results match the keyword:" + keyWord, event.threadID, event.messageID);
+ if (result.length == 0) return api.sendMessage("⭕কী গান শুনবা সেটা তো লিখলে না😑💩:" + keyWord, event.threadID, event.messageID);
 
  let msg = "";
  let i = 1;
@@ -86,7 +86,7 @@ module.exports.handleReply = async ({ event, api, handleReply }) => {
  }
  } catch (error) {
  console.log(error);
- api.sendMessage("⭕ Sorry, audio size was less than 26MB", event.threadID, event.messageID);
+ api.sendMessage("⭕ Sorry boss 😑 audio size was less than 26MB", event.threadID, event.messageID);
  }
 };
 
