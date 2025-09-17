@@ -13,15 +13,30 @@ module.exports.config = {
     cooldowns: 5,
 };
 
+// Recursive ফাংশন যা project 
+function findFileRecursive(dir, filename) {
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+        const fullPath = path.join(dir, file);
+        const stat = fs.statSync(fullPath);
+        if (stat.isDirectory()) {
+            const found = findFileRecursive(fullPath, filename);
+            if (found) return found;
+        } else if (file === filename) {
+            return fullPath;
+        }
+    }
+    return null;
+}
+
 module.exports.run = async function ({ api, event, Users, Threads }) {
     const { threadID } = event;
 
-    // Root ফোল্ডার
-    const imagePath = path.join(__dirname, "..", "rahat1.png");
+    // Project root থেকে search শুরু
+    const projectRoot = path.resolve(__dirname, "..", ".."); // project root adjust করতে পারো যদি প্রয়োজন হয়
+    const imagePath = findFileRecursive(projectRoot, "rahat1.png");
 
-    if (!fs.existsSync(imagePath)) {
-        return api.sendMessage("❌ Image not found!", threadID);
-    }
+    if (!imagePath) return api.sendMessage("❌ png file not found!", threadID);
 
     // Bot uptime
     const uptime = process.uptime();
