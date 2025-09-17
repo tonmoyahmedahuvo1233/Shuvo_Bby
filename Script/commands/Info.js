@@ -1,38 +1,23 @@
+const fs = require("fs");
+const path = require("path");
+
 module.exports.config = {
- name: "info",
- version: "1.2.6",
- hasPermssion: 0,
- credits: "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐈𝐬𝐥𝐚𝐦",
- description: "Bot information command",
- commandCategory: "For users",
- hide: true,
- usages: "",
- cooldowns: 5,
+  name: "info",
+  version: "1.6.0",
+  hasPermssion: 0,
+  credits: "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐈𝐬𝐥𝐚𝐦",
+  description: "Bot information command",
+  commandCategory: "For users",
+  hide: true,
+  usages: "",
+  cooldowns: 5,
 };
 
-module.exports.run = async function ({ api, event, args, Users, Threads }) {
- const { threadID } = event;
- const request = global.nodemodule["request"];
- const fs = global.nodemodule["fs-extra"];
- const moment = require("moment-timezone");
+module.exports.run = async function({ api, event }) {
+  const { threadID } = event;
 
- const { configPath } = global.client;
- delete require.cache[require.resolve(configPath)];
- const config = require(configPath);
-
- const { commands } = global.client;
- const threadSetting = (await Threads.getData(String(threadID))).data || {};
- const prefix = threadSetting.hasOwnProperty("PREFIX") ? threadSetting.PREFIX : config.PREFIX;
-
- const uptime = process.uptime();
- const hours = Math.floor(uptime / 3600);
- const minutes = Math.floor((uptime % 3600) / 60);
- const seconds = Math.floor(uptime % 60);
-
- const totalUsers = global.data.allUserID.length;
- const totalThreads = global.data.allThreadID.length;
-
- const msg = `┏━━━━━━━━━━━━━━━┓
+  // info message
+  const msg = `┏━━━━━━━━━━━━━━━┓
 ┃   🌟 𝗢𝗪𝗡𝗘𝗥 𝗜𝗡𝗙𝗢 🌟    
 ┣━━━━━━━━━━━━━━━┫
 ┃👤 𝐍𝐚𝐦𝐞      :🔰𝗥𝗮𝗵𝗮𝘁🔰
@@ -50,21 +35,28 @@ module.exports.run = async function ({ api, event, args, Users, Threads }) {
 ┗━━━━━━━━━━━━━━━┛
 `;
 
- const imgLinks = [
- "https://imgur.com/a/Xyh6aLz.png",
- "https://imgur.com/a/Xyh6aLz.jpeg",
- "https://imgur.com/a/DIAucIy.jpeg",
- "https://imgur.com/a/Flewh30.jpeg"
- ];
+  // __dirname/rahat ফোল্ডার থেকে মিডিয়া 
+  const mediaFolder = path.join(__dirname, "rahat");
 
- const imgLink = imgLinks[Math.floor(Math.random() * imgLinks.length)];
+  if (!fs.existsSync(mediaFolder)) {
+    return api.sendMessage("❌ rahat ফোল্ডার পাওয়া যায়নি!", threadID);
+  }
 
- const callback = () => {
- api.sendMessage({
- body: msg,
- attachment: fs.createReadStream(__dirname + "/cache/info.jpg")
- }, threadID, () => fs.unlinkSync(__dirname + "/cache/info.jpg"));
- };
+  // শুধুমাত্র মিডিয়া ফাইল (.jpg, .png, .gif, .mp4)
+  const mediaFiles = fs.readdirSync(mediaFolder)
+    .filter(file => /\.(jpg|jpeg|png|gif|mp4)$/i.test(file))
+    .map(file => path.join(mediaFolder, file));
 
- return request(encodeURI(imgLink)).pipe(fs.createWriteStream(__dirname + "/cache/info.jpg")).on("close", callback);
+  if (mediaFiles.length === 0) {
+    return api.sendMessage("❌ rahat ফোল্ডারে কোনো ছবি বা ভিডিও পাওয়া যায়নি!", threadID);
+  }
+
+  // র‍্যান্ডম একটি ফাইল নির্বাচন
+  const randomFile = mediaFiles[Math.floor(Math.random() * mediaFiles.length)];
+
+  // পাঠানো
+  api.sendMessage({
+    body: msg,
+    attachment: fs.createReadStream(randomFile)
+  }, threadID);
 };
