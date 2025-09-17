@@ -15,7 +15,7 @@ module.exports.run = async ({ api, event, args }) => {
 	const request = require('request');
 	const fs = require("fs");
     var out = (msg) => api.sendMessage(msg, event.threadID, event.messageID);
-  if (!args.join("")) return out("Please tag someone");
+  if (!args.join("")) return out("😑একজন কে মেনশন কী তোর নানি দিবো");
   else
   return axios.get('https://api.waifu.pics/sfw/slap').then(res => {
         let getURL = res.data.url;
@@ -38,7 +38,7 @@ module.exports.run = async ({ api, event, args }) => {
         request(getURL).pipe(fs.createWriteStream(__dirname + `/cache/slap.${ext}`)).on("close", callback);
 			})
     .catch(err => {
-                     api.sendMessage("Failed to generate gif, be sure that you've tag someone!", event.threadID, event.messageID);
+                     api.sendMessage("❌সরি বস হচ্ছে না আবার চেষ্টা করো🐸🙏", event.threadID, event.messageID);
     api.setMessageReaction("☹️", event.messageID, (err) => {}, true);
                   })     
 }
