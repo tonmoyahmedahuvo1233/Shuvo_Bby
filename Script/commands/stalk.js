@@ -1,5 +1,5 @@
 module.exports.config = {
-    name: "stalk",
+    name: "jan",
     version: "1.0.0",
     hasPermssion: 2,
     credits: "Shaon Ahmed",
