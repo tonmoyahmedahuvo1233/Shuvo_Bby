@@ -31,7 +31,7 @@ module.exports.languages = {
 ┣━━━━━━━━━━━━━━━━┫
 ┃ ⚙ Prefix: %8
 ┃ 🤖 Bot Name: %9
-┃ 👑 Owner: 𝐒𝐇𝐀𝐇𝐀𝐃𝐀𝐓 𝐒𝐀𝐇𝐔
+┃ 👑 Owner👉 m.me/61561511477968
 ╰━━━━━━━━━━━━━━━━╯`,
         "helpList": "[ There are %1 commands. Use: \"%2help commandName\" to view more. ]",
         "user": "User",
@@ -72,7 +72,7 @@ module.exports.handleEvent = function ({ api, event, getText }) {
         command.config.commandCategory || "Unknown",
         command.config.cooldowns || 0,
         prefix,
-        global.config.BOTNAME || "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐂𝐡𝐚𝐭 𝐁𝐨𝐭"
+        global.config.BOTNAME || "🔰 𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁 🔰"
     );
 
     api.sendMessage({ body: detail, attachment: getVideoAttachment() }, threadID, messageID);
@@ -97,7 +97,7 @@ module.exports.run = function ({ api, event, args, getText }) {
             command.config.commandCategory || "Unknown",
             command.config.cooldowns || 0,
             prefix,
-            global.config.BOTNAME || "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐂𝐡𝐚𝐭 𝐁𝐨𝐭"
+            global.config.BOTNAME || "🔰 𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁 🔰"
         );
 
         api.sendMessage({ body: detailText, attachment: getVideoAttachment() }, threadID, messageID);
@@ -109,7 +109,7 @@ module.exports.run = function ({ api, event, args, getText }) {
         .sort();
 
     const page = Math.max(parseInt(args[0]) || 1, 1);
-    const numberOfOnePage = 20;
+    const numberOfOnePage = 180;
     const totalPages = Math.ceil(arrayInfo.length / numberOfOnePage);
     const start = numberOfOnePage * (page - 1);
     const helpView = arrayInfo.slice(start, start + numberOfOnePage);
@@ -117,7 +117,8 @@ module.exports.run = function ({ api, event, args, getText }) {
     let msg = helpView.map(cmdName => `┃ ✪ ${cmdName}`).join("\n");
 
     const text = `╭━━━━━━━━━━━━━━━━╮
-┃ 📜 𝐂𝐎𝐌𝐌𝐀𝐍𝐃 𝐋𝐈𝐒𝐓 📜
+┃ 🔰 𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁 🔰
+┃📜 𝐂𝐎𝐌𝐌𝐀𝐍𝐃 𝐋𝐈𝐒𝐓 📜
 ┣━━━━━━━━━━━━━━━┫
 ┃ 📄 Page: ${page}/${totalPages}
 ┃ 🧮 Total: ${arrayInfo.length}
@@ -125,8 +126,8 @@ module.exports.run = function ({ api, event, args, getText }) {
 ${msg}
 ┣━━━━━━━━━━━━━━━━┫
 ┃ ⚙ Prefix: ${prefix}
-┃ 🤖 Bot Name: ${global.config.BOTNAME || "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐂𝐡𝐚𝐭 𝐁𝐨𝐭"}
-┃ 👑 Owner: 𝐒𝐇𝐀𝐇𝐀𝐃𝐀𝐓 𝐒𝐀𝐇𝐔
+┃ 🤖 Bot Name: ${global.config.BOTNAME || "🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰"}
+┃ 👑 Owner👉 m.me/61561511477968
 ╰━━━━━━━━━━━━━━━━╯`;
 
     api.sendMessage({ body: text, attachment: getVideoAttachment() }, threadID, messageID);
