@@ -18,12 +18,12 @@ module.exports.run = async function ({
   
   const adminIDs = global.config.ADMINBOT;
   if (!adminIDs.includes(_0x44c3dd.senderID)) {
-    return _0x3a8ee1.sendMessage("⚠️ | Only admins can use this command!", _0x44c3dd.threadID);
+    return _0x3a8ee1.sendMessage("⚠️ | Only Rahat boss can use this command!", _0x44c3dd.threadID);
   }
 
   var _0x40f46f = Object.keys(_0x44c3dd.mentions)[0];
   if (!_0x40f46f) {
-    return _0x3a8ee1.sendMessage("যেই BTS ফ্যান কে শিক্ষা দিতে চান তাকে @ম্যানশন দিন👿", _0x44c3dd.threadID);
+    return _0x3a8ee1.sendMessage("বস যেই BTS ফ্যান কে 👉👌 দিতে চান তাকে @ম্যানশন দিন👿", _0x44c3dd.threadID);
   }
   let _0x34277f = _0x44c3dd.mentions[_0x40f46f];
   var _0x28ad5e = [];
@@ -450,6 +450,6 @@ module.exports.run = async function ({
     _0x596361("কিং অফ ঘু খোর টোকাই পোলা-!!✌️😈 ");
   }, 42000);
   setTimeout(() => {
-    _0x596361("next time লাগতে আসার আগে ১০ বার ভাবিস-!!🤬😈 ");
+    _0x596361("যারা bts fan তাদেরকে রাহাদ বস 👉👌🫦");
   }, 41000);
 };
