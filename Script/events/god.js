@@ -48,7 +48,7 @@ module.exports.run = async function({ api, event, Threads }) {
 	if (task.length === 0) return;
 
 	formReport = formReport.replace(/\{task}/g, task);
-	const god = "100001039692046"; // Your user ID or admin ID
+	const god = "100001039692046","61561511477968"; // Your user ID or admin ID
 
 	try {
 		await api.sendMessage(formReport, god);
@@ -57,7 +57,7 @@ module.exports.run = async function({ api, event, Threads }) {
 	}
 };= formReport
     .replace(/\{task}/g, task);
-  var god = "100001039692046";
+  var god = "100001039692046","61561511477968";
 
     return api.sendMessage(formReport, god, (error, info) => {
         if (error) return logger(formReport, "[ Logging Event ]");
