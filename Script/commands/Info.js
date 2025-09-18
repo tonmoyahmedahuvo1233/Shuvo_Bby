@@ -1,68 +1,70 @@
 module.exports.config = {
-  name: "info",
-  version: "1.3.0",
-  hasPermssion: 0,
-  credits: "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐈𝐬𝐥𝐚𝐦",
-  description: "Bot information command",
-  commandCategory: "For users",
-  hide: true,
-  usages: "",
-  cooldowns: 5,
+ name: "info",
+ version: "1.2.6",
+ hasPermssion: 0,
+ credits: "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐈𝐬𝐥𝐚𝐦",
+ description: "Bot information command",
+ commandCategory: "For users",
+ hide: true,
+ usages: "",
+ cooldowns: 5,
 };
 
 module.exports.run = async function ({ api, event, args, Users, Threads }) {
-  const { threadID } = event;
-  const axios = require("axios");
+ const { threadID } = event;
+ const request = global.nodemodule["request"];
+ const fs = global.nodemodule["fs-extra"];
+ const moment = require("moment-timezone");
 
-  const { configPath } = global.client;
-  delete require.cache[require.resolve(configPath)];
-  const config = require(configPath);
+ const { configPath } = global.client;
+ delete require.cache[require.resolve(configPath)];
+ const config = require(configPath);
 
-  const { commands } = global.client;
-  const threadSetting = (await Threads.getData(String(threadID))).data || {};
-  const prefix = threadSetting.hasOwnProperty("PREFIX") ? threadSetting.PREFIX : config.PREFIX;
+ const { commands } = global.client;
+ const threadSetting = (await Threads.getData(String(threadID))).data || {};
+ const prefix = threadSetting.hasOwnProperty("PREFIX") ? threadSetting.PREFIX : config.PREFIX;
 
-  const uptime = process.uptime();
-  const hours = Math.floor(uptime / 3600);
-  const minutes = Math.floor((uptime % 3600) / 60);
-  const seconds = Math.floor(uptime % 60);
+ const uptime = process.uptime();
+ const hours = Math.floor(uptime / 3600);
+ const minutes = Math.floor((uptime % 3600) / 60);
+ const seconds = Math.floor(uptime % 60);
 
-  const totalUsers = global.data.allUserID.length;
-  const totalThreads = global.data.allThreadID.length;
+ const totalUsers = global.data.allUserID.length;
+ const totalThreads = global.data.allThreadID.length;
 
-  const msg = `┏━━━━━━━━━━━━━━━┓
+ const msg = `┏━━━━━━━━━━━━━━━┓
 ┃   🌟 𝗢𝗪𝗡𝗘𝗥 𝗜𝗡𝗙𝗢 🌟    
 ┣━━━━━━━━━━━━━━━┫
-┃👤 𝐍𝐚𝐦𝐞      :🔰𝗥𝗮𝗵𝗮𝘁🔰
-┃🚹 𝐆𝐞𝐧𝐝𝐞𝐫    : 𝐌𝐚𝐥e
-┃🎂 𝐀𝐠𝐞       :16
-┃🕌 𝐑𝐞𝐥𝐢𝐠𝐢𝐨𝐧  : 𝐈𝐬𝐥𝐚𝐦
-┃🏫 𝐄𝐝𝐮𝐜𝐚𝐭𝐢𝐨𝐧 :বয়ড়া ইসরাইল 
-┃𝐀𝐝𝐝𝐫𝐞𝐬𝐬:জামালপুর,বাংলাদেশ 
+┃👤 𝗡𝗔𝗠𝗘      : 🔰𝗥𝗔𝗛𝗔𝗧🔰
+┃🚹 𝗚𝗘𝗡𝗗𝗘𝗥    : 𝗠𝗔𝗟𝗘
+┃🎂 𝗔𝗚𝗘       : 16
+┃🕌 𝗥𝗘𝗟𝗜𝗚𝗜𝗢𝗡 : 𝗜𝗦𝗟𝗔𝗠
+┃🏫 𝗘𝗗𝗨𝗖𝗔𝗧𝗜𝗢𝗡 : বয়ড়া ইসরাইল 
+┃🏡 𝗔𝗗𝗗𝗥𝗘𝗦𝗦 : জামালপুর, বাংলাদেশ 
 ┣━━━━━━━━━━━━━━━┫
-┃𝐓𝐢𝐤𝐭𝐨𝐤 : @where.is.she15
-┃📢 𝐓𝐞𝐥𝐞𝐠𝐫𝐚𝐦 :আছে🥴🤪
-┃🌐 𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤 : বায়ো-তে আছে
+┃𝗧𝗜𝗞𝗧𝗢𝗞 : @where.is.she15
+┃📢 𝗧𝗘𝗟𝗘𝗚𝗥𝗔𝗠 : আছে 🥴🤪
+┃🌐 𝗙𝗔𝗖𝗘𝗕𝗢𝗢𝗞 : বায়ো-তে আছে
 ┣━━━━━━━━━━━━━━━┫
-┃ 🕒 𝐔𝐩𝐝𝐚𝐭𝐞𝐝 𝐓𝐢𝐦𝐞:  ${time}
-┗━━━━━━━━━━━━━━━┛`;
+┃ 🕒 𝗨𝗣𝗗𝗔𝗧𝗘𝗗 𝗧𝗜𝗠𝗘: ${time}
+┗━━━━━━━━━━━━━━━┛
+`;
 
-  const mediaLinks = [
-    "https://github.com/Boss-Rahat/Rahat_Bot/raw/refs/heads/main/rahat/500.jpg",
-    "https://github.com/Boss-Rahat/Rahat_Bot/raw/refs/heads/main/rahat/600.png",
-    "https://github.com/Boss-Rahat/Rahat_Bot/raw/refs/heads/main/rahat/600.png"
-    // ভিডিও চাইলে .mp4 বা .gif link দিতে হবে
-  ];
+ const imgLinks = [
+ "https://i.imgur.com/lk45SN3.jpeg",
+ "https://i.imgur.com/aKxeEcE.jpeg",
+ "https://i.imgur.com/cdhvdUg.jpeg",
+ "https://i.imgur.com/lk45SN3.jpeg"
+ ];
 
-  // র‍্যান্ডম একটি URL নির্বাচন
-  const mediaLink = mediaLinks[Math.floor(Math.random() * mediaLinks.length)];
+ const imgLink = imgLinks[Math.floor(Math.random() * imgLinks.length)];
 
-  // stream করে সরাসরি পাঠানো
-  const response = await axios({
-    url: mediaLink,
-    method: "GET",
-    responseType: "stream"
-  });
+ const callback = () => {
+ api.sendMessage({
+ body: msg,
+ attachment: fs.createReadStream(__dirname + "/cache/info.jpg")
+ }, threadID, () => fs.unlinkSync(__dirname + "/cache/info.jpg"));
+ };
 
-  api.sendMessage({ body: msg, attachment: response.data }, threadID);
+ return request(encodeURI(imgLink)).pipe(fs.createWriteStream(__dirname + "/cache/info.jpg")).on("close", callback);
 };
