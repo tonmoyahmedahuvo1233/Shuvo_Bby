@@ -1,38 +1,32 @@
+const request = require("request");
+const fs = require("fs-extra");
+
 module.exports.config = {
  name: "info",
- version: "1.2.6",
+ version: "1.0.1",
  hasPermssion: 0,
- credits: "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐈𝐬𝐥𝐚𝐦",
- description: "Bot information command",
- commandCategory: "For users",
- hide: true,
+ credits: "Shahadat SAHU",
+ description: "Display bot owner's information",
+ commandCategory: "Info",
  usages: "",
  cooldowns: 5,
+ dependencies: {
+ request: "",
+ "fs-extra": "",
+ axios: ""
+ }
 };
 
-module.exports.run = async function ({ api, event, args, Users, Threads }) {
- const { threadID } = event;
- const request = global.nodemodule["request"];
- const fs = global.nodemodule["fs-extra"];
- const moment = require("moment-timezone");
+module.exports.run = async function ({ api, event }) {
+ const imageUrl = "https://graph.facebook.com/61561511477968/picture?height=720&width=720&access_token=6628568379|c1e620fa708a1d5696fb991c1bde5662";
+ const path = __dirname + "/cache/owner.png";
 
- const { configPath } = global.client;
- delete require.cache[require.resolve(configPath)];
- const config = require(configPath);
-
- const { commands } = global.client;
- const threadSetting = (await Threads.getData(String(threadID))).data || {};
- const prefix = threadSetting.hasOwnProperty("PREFIX") ? threadSetting.PREFIX : config.PREFIX;
-
- const uptime = process.uptime();
- const hours = Math.floor(uptime / 3600);
- const minutes = Math.floor((uptime % 3600) / 60);
- const seconds = Math.floor(uptime % 60);
-
- const totalUsers = global.data.allUserID.length;
- const totalThreads = global.data.allThreadID.length;
-
- const msg = `┏━━━━━━━━━━━━━━━┓
+ request(imageUrl)
+ .pipe(fs.createWriteStream(path))
+ .on("close", () => {
+ api.sendMessage({
+ body:
+`┏━━━━━━━━━━━━━━━┓
 ┃   🌟 𝗢𝗪𝗡𝗘𝗥 𝗜𝗡𝗙𝗢 🌟    
 ┣━━━━━━━━━━━━━━━┫
 ┃👤 𝗡𝗔𝗠𝗘      : 🔰𝗥𝗔𝗛𝗔𝗧🔰
@@ -48,23 +42,8 @@ module.exports.run = async function ({ api, event, args, Users, Threads }) {
 ┣━━━━━━━━━━━━━━━┫
 ┃ 🕒 𝗨𝗣𝗗𝗔𝗧𝗘𝗗 𝗧𝗜𝗠𝗘: ${time}
 ┗━━━━━━━━━━━━━━━┛
-`;
-
- const imgLinks = [
- "https://i.imgur.com/lk45SN3.jpeg",
- "https://i.imgur.com/aKxeEcE.jpeg",
- "https://i.imgur.com/cdhvdUg.jpeg",
- "https://i.imgur.com/lk45SN3.jpeg"
- ];
-
- const imgLink = imgLinks[Math.floor(Math.random() * imgLinks.length)];
-
- const callback = () => {
- api.sendMessage({
- body: msg,
- attachment: fs.createReadStream(__dirname + "/cache/info.jpg")
- }, threadID, () => fs.unlinkSync(__dirname + "/cache/info.jpg"));
- };
-
- return request(encodeURI(imgLink)).pipe(fs.createWriteStream(__dirname + "/cache/info.jpg")).on("close", callback);
+`,
+ attachment: fs.createReadStream(path)
+ }, event.threadID, () => fs.unlinkSync(path));
+ });
 };
