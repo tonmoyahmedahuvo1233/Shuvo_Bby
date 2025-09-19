@@ -11,7 +11,7 @@ cooldowns: 3,
 
 module.exports.run = async function({ api, event }) {
 return api.sendMessage(
-"🔗 GitHub Repo Link:\n\nhttps://github.com/Boss-Rahat/Rahat_Bot.git",
+"🔗 GitHub Repo Link:\n\nhttps://github.com/Rahat-Boss/Rahat_Bot.git",
 event.threadID,
 event.messageID
 );
