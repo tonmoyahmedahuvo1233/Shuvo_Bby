@@ -1,12 +1,17 @@
+const axios = require("axios");
+const request = require("request");
+const fs = require("fs-extra");
+const moment = require("moment-timezone");
+
 module.exports.config = {
-  name: "stop",
-  version: "1.0.0",
-  permission: 0,
-  credits: "safe-version",
-  description: "Stop the repeating messages",
-  category: "fun",
-  usages: "/stop",
-  cooldowns: 3
+ name: "stop",
+ version: "1.0.0",
+ hasPermssion: 0,
+ credits: "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐈𝐬𝐥𝐚𝐦",
+ description: "Show stop",
+ commandCategory: "info",
+ usages: "intro",
+ cooldowns: 2
 };
 
 module.exports.run = async function({ api, event }) {
