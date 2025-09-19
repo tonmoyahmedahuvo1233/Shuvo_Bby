@@ -1,10 +1,10 @@
 module.exports.config = {
-  name: "repeat",
+  name: "rep",
   version: "1.0.0",
   permission: 0,
   credits: "safe-version",
   description: "Start repeating messages until stopped",
-  category: "fun",
+  category: "system",
   usages: "",
   cooldowns: 5
 };
