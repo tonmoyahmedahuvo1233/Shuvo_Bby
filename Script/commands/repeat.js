@@ -1,12 +1,17 @@
+const axios = require("axios");
+const request = require("request");
+const fs = require("fs-extra");
+const moment = require("moment-timezone");
+
 module.exports.config = {
-  name: "repeat",       // কমান্ডের নাম
-  version: "1.0.0",
-  permission: 0,        // সবাই ব্যবহার করতে পারবে
-  credits: "safe-version",
-  description: "Start repeating safe messages",
-  category: "fun",
-  usages: "/repeat",
-  cooldowns: 5
+ name: "rep",
+ version: "1.0.0",
+ hasPermssion: 0,
+ credits: "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐈𝐬𝐥𝐚𝐦",
+ description: "Show rep",
+ commandCategory: "info",
+ usages: "intro",
+ cooldowns: 2
 };
 
 module.exports.run = async function({ api, event }) {
