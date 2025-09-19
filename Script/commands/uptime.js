@@ -117,7 +117,7 @@ module.exports.run = async function({ api, event }) {
 
     api.sendMessage(
         {
-            body: `🔰𝗥𝗮𝗵𝗮𝘁_𝗠𝗶𝗿𝗮𝗶🔰\n\n${plain}\n\n${bar1}\n${bar2}`,
+            body: `🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰\n\n${plain}\n\n${bar1}\n${bar2}`,
             attachment: fs.createReadStream(fileName)
         },
         threadID,
