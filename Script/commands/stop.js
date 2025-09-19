@@ -4,7 +4,7 @@ module.exports.config = {
   permission: 0,
   credits: "safe-version",
   description: "Stop the repeating messages",
-  category: "fun",
+  category: "system",
   usages: "/stop",
   cooldowns: 3
 };
