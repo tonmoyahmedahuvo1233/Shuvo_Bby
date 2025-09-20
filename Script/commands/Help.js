@@ -3,7 +3,7 @@ const path = require("path");
 
 module.exports.config = {
     name: "help",
-    version: "2.0.0",
+    version: "2.0.4",
     hasPermssion: 0,
     credits: "SHAHADAT SAHU (Modified by Rahat)",
     description: "Shows all commands with details",
@@ -40,27 +40,25 @@ module.exports.languages = {
     }
 };
 
-// ✅ এখানে ভিডিওর path দাও (যে কোনো জায়গায় রাখতে পারো)
-const videoPath = path.resolve("help.mp4"); 
-// মানে প্রজেক্টের মূল ফোল্ডারে help.mp4 রাখলেই হবে
-
+// ✅ ভিডিও path
+const videoPath = path.resolve("help.mp4");
 function getVideoAttachment() {
-    if (fs.existsSync(videoPath)) {
-        return [fs.createReadStream(videoPath)];
-    }
-    return []; // ভিডিও না থাকলে শুধু টেক্সট যাবে
+    return fs.existsSync(videoPath) ? [fs.createReadStream(videoPath)] : [];
 }
 
+// ============================
+// 🔹 handleEvent
+// ============================
 module.exports.handleEvent = function ({ api, event, getText }) {
     const { commands } = global.client;
     const { threadID, messageID, body } = event;
 
-    if (!body || typeof body === "undefined" || body.indexOf("help") != 0) return;
-    const splitBody = body.slice(body.indexOf("help")).trim().split(/\s+/);
-    if (splitBody.length < 2 || !commands.has(splitBody[1].toLowerCase())) return;
+    if (!body || !body.startsWith("help")) return;
+    const args = body.trim().split(/\s+/);
+    if (args.length < 2 || !commands.has(args[1].toLowerCase())) return;
 
     const threadSetting = global.data.threadData.get(parseInt(threadID)) || {};
-    const command = commands.get(splitBody[1].toLowerCase());
+    const command = commands.get(args[1].toLowerCase());
     const prefix = threadSetting.PREFIX || global.config.PREFIX;
 
     const detail = getText("moduleInfo",
@@ -78,16 +76,52 @@ module.exports.handleEvent = function ({ api, event, getText }) {
     api.sendMessage({ body: detail, attachment: getVideoAttachment() }, threadID, messageID);
 };
 
-module.exports.run = function ({ api, event, args, getText }) {
+// ============================
+// 🔹 run function with sparkle animation
+// ============================
+module.exports.run = async function({ api, event, args, getText }) {
     const { commands } = global.client;
     const { threadID, messageID } = event;
-
     const threadSetting = global.data.threadData.get(parseInt(threadID)) || {};
     const prefix = threadSetting.PREFIX || global.config.PREFIX;
 
+    api.sendMessage("▒▒▒▒▒▒▒▒▒▒ 0% ✨", threadID, async (err, info) => {
+        if (err) return console.error(err);
+        const progressMsgID = info.messageID;
+
+        let step = 0;
+        const interval = 120; // smooth & fast
+        const progressBarLength = 10;
+
+        const progressInterval = setInterval(() => {
+            step += 1;
+            if (step > 10) {
+                clearInterval(progressInterval);
+                setTimeout(() => {
+                    api.unsendMessage(progressMsgID);
+                    sendHelpInfo(api, threadID, messageID, args, getText, prefix, commands);
+                }, 1000);
+                return;
+            }
+
+            const filledBlocks = "█".repeat(step);
+            const emptyBlocks = "▒".repeat(progressBarLength - step);
+
+            // Spark effect
+            const spark = step % 2 === 0 ? "✨" : "💎";
+            const percent = step * 10;
+            api.editMessage(`${filledBlocks}${emptyBlocks} ${percent}% ${spark}`, progressMsgID, threadID);
+
+        }, interval);
+    });
+};
+
+// ============================
+// 🔹 মূল help info function
+// ============================
+function sendHelpInfo(api, threadID, messageID, args, getText, prefix, commands) {
     if (args[0] && commands.has(args[0].toLowerCase())) {
         const command = commands.get(args[0].toLowerCase());
-
         const detailText = getText("moduleInfo",
             command.config.name,
             command.config.usages || "Not Provided",
@@ -104,17 +138,14 @@ module.exports.run = function ({ api, event, args, getText }) {
         return;
     }
 
-    const arrayInfo = Array.from(commands.keys())
-        .filter(cmdName => cmdName && cmdName.trim() !== "")
-        .sort();
-
+    const arrayInfo = Array.from(commands.keys()).filter(Boolean).sort();
     const page = Math.max(parseInt(args[0]) || 1, 1);
     const numberOfOnePage = 180;
     const totalPages = Math.ceil(arrayInfo.length / numberOfOnePage);
     const start = numberOfOnePage * (page - 1);
     const helpView = arrayInfo.slice(start, start + numberOfOnePage);
 
-    let msg = helpView.map(cmdName => `┃ ✪ ${cmdName}`).join("\n");
+    const msg = helpView.map(cmdName => `┃ ✪ ${cmdName}`).join("\n");
 
     const text = `╭━━━━━━━━━━━━━━━━╮
 ┃ 🔰 𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁 🔰
@@ -131,4 +162,4 @@ ${msg}
 ╰━━━━━━━━━━━━━━━━╯`;
 
     api.sendMessage({ body: text, attachment: getVideoAttachment() }, threadID, messageID);
-};
+}
