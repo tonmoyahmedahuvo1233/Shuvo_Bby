@@ -4,9 +4,9 @@ const { createCanvas } = require("canvas");
 
 module.exports.config = {
     name: "uptime",
-    version: "1.0.0",
+    version: "1.0.1",
     hasPermssion: 0,
-    credits: "nexo_here (converted for mirai by Rahat)",
+    credits: "nexo_here (converted for mirai by Rahat, modified with progress animation)",
     description: "Show system info: uptime, RAM, CPU, load, platform etc",
     commandCategory: "system",
     usages: "",
@@ -16,6 +16,38 @@ module.exports.config = {
 module.exports.run = async function({ api, event }) {
     const { threadID, messageID } = event;
 
+    // Step 1: প্রথম progress মেসেজ পাঠানো
+    api.sendMessage("███▒▒▒▒▒▒▒▒▒▒ 30%", threadID, (err, info) => {
+        if (err) return console.error(err);
+        const progressMsgID = info.messageID;
+
+        // Step 2: ৩ সেকেন্ড পরে update → 50%
+        setTimeout(() => {
+            api.editMessage("█████▒▒▒▒▒▒ 50%", progressMsgID, threadID);
+
+            // Step 3: ২ সেকেন্ড পরে update → 80%
+            setTimeout(() => {
+                api.editMessage("████████▒▒80%", progressMsgID, threadID);
+
+                // Step 4: ২ সেকেন্ড পরে update → 100%
+                setTimeout(() => {
+                    api.editMessage("██████████100%", progressMsgID, threadID);
+
+                    // Step 5: ১.৫ সেকেন্ড পরে মেসেজ ডিলিট করে uptime রিপোর্ট পাঠানো
+                    setTimeout(() => {
+                        api.unsendMessage(progressMsgID);
+                        sendUptimeInfo(api, threadID, messageID);
+                    }, 1500);
+                }, 2000);
+            }, 2000);
+        }, 3000);
+    });
+};
+
+// ========================
+// 🔰 Uptime Info Function
+// ========================
+function sendUptimeInfo(api, threadID, messageID) {
     const width = 1400;
     const height = 800;
     const canvas = createCanvas(width, height);
@@ -123,8 +155,11 @@ module.exports.run = async function({ api, event }) {
         threadID,
         messageID
     );
-};
+}
 
+// ========================
+// 🔰 Helper Functions
+// ========================
 function drawGlassCard(ctx, x, y, w, h, r) {
     ctx.shadowColor = "#00ffaa33";
     ctx.shadowBlur = 30;
@@ -167,4 +202,4 @@ function roundRect(ctx, x, y, w, h, r, fill, stroke) {
     ctx.closePath();
     if (fill) ctx.fill();
     if (stroke) ctx.stroke();
-                             }
+              }
