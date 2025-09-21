@@ -4,10 +4,10 @@ const fs = require("fs-extra");
 const moment = require("moment-timezone");
 
 module.exports.config = {
- name: "stop",
+ name: "rahat_bot_stop",
  version: "1.0.0",
  hasPermssion: 0,
- credits: "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐈𝐬𝐥𝐚𝐦",
+ credits: "𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘀𝘀",
  description: "Show stop",
  commandCategory: "info",
  usages: "intro",
@@ -18,11 +18,11 @@ module.exports.run = async function({ api, event }) {
   const threadID = event.threadID;
 
   if (!global.clientIntervals || !global.clientIntervals[threadID]) {
-    return api.sendMessage("এই চ্যাটে কোন রিপিট চলছে না 🐸", threadID);
+    return api.sendMessage("কাউকে তো চু*দা হচ্ছে না তাহলে rahat_bot_stop বলছো কেন🫩🐸", threadID);
   }
 
   clearInterval(global.clientIntervals[threadID]);
   delete global.clientIntervals[threadID];
 
-  return api.sendMessage("✅ রিপিট বন্ধ করা হলো।", threadID);
+  return api.sendMessage("✅বস থামতে বলছো কেন😑ওকে আরো চুদতে হবে💩", threadID);
 };
