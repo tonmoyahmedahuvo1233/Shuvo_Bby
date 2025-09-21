@@ -4,13 +4,13 @@ const fs = require("fs-extra");
 const moment = require("moment-timezone");
 
 module.exports.config = {
-  name: "rep",
-  version: "1.0.0",
+  name: "murgi100",
+  version: "2.0.0",
   hasPermssion: 0,
-  credits: "𝐒𝐡𝐚𝐡𝐚𝐝𝐚𝐭 𝐈𝐬𝐥𝐚ম",
-  description: "Show rep",
+  credits: "🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘀𝘀🔰",
+  description: "Show murgi",
   commandCategory: "info",
-  usages: "rep @mention",
+  usages: "murgi100 @mention",
   cooldowns: 2
 };
 
@@ -19,7 +19,7 @@ module.exports.run = async function({ api, event }) {
   const mentions = Object.keys(event.mentions || {});
 
   if (mentions.length === 0) {
-    return api.sendMessage("দয়া করে একজনকে মেনশন করো: /rep @username", threadID);
+    return api.sendMessage("𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘀𝘀 কাকে চুদতে চাও😑একবার শুধু mention করো💩ওর চৌদ্দ গুষ্টি চুদে দিব🙂", threadID);
   }
 
   const targetID = mentions[0];
@@ -28,7 +28,7 @@ module.exports.run = async function({ api, event }) {
   if (!global.clientIntervals) global.clientIntervals = {};
 
   if (global.clientIntervals[threadID]) {
-    return api.sendMessage("এই চ্যাটে রিপিট ইতিমধ্যেই চলছে 🐸\n/stop টাইপ করলে থামবে।", threadID);
+    return api.sendMessage("𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘀𝘀 না থামতে বললে থামবো না🫵🏻😎চুদতেই থাকবো", threadID);
   }
 
   const messages = [
