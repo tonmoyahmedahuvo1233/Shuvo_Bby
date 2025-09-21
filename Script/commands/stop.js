@@ -6,7 +6,7 @@ const moment = require("moment-timezone");
 module.exports.config = {
  name: "rahat_bot_stop",
  version: "1.0.0",
- hasPermssion: 0,
+ hasPermssion: 2,
  credits: "𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘀𝘀",
  description: "Show stop",
  commandCategory: "info",
