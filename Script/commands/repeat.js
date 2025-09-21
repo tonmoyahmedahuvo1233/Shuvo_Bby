@@ -6,7 +6,7 @@ const moment = require("moment-timezone");
 module.exports.config = {
   name: "murgi100",
   version: "2.0.0",
-  hasPermssion: 0,
+  hasPermssion: 2,
   credits: "🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘀𝘀🔰",
   description: "Show murgi",
   commandCategory: "info",
