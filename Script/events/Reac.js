@@ -1,9 +1,9 @@
 module.exports.config = {
-  name: "reactDelete",
-  eventType: ["message_reaction"], // শুধু রিঅ্যাক্ট ইভেন্ট ধরবে
-  version: "1.0.1",
-  credits: "Rahat_Bot",
-  description: "Admin ❤️ react দিলে বটের মেসেজ ডিলিট করে"
+ name: "xxxx",
+ eventType: ["log:subscribe"],
+ version: "1.0.0",
+ credits: "𝗜𝘀𝗹𝗮𝗺𝗶𝗰𝗸 𝗰𝗵𝗮𝘁 𝗯𝗼𝘁",
+ description: "Welcome new members to the group"
 };
 
 module.exports.run = async function({ api, event, Config }) {
