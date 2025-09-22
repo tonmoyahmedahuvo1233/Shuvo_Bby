@@ -14,7 +14,7 @@ module.exports.run = async function({ api, event, Config }) {
     if (!adminList.includes(event.userID)) return;
 
     // চেক করুন রিঅ্যাক্ট ❤️ কিনা
-    if (event.reaction !== "❤") return;
+    if (event.reaction !== "♥️") return;
 
     // রিঅ্যাক্ট করা মেসেজের ইনফো বের করা
     const msgInfo = await api.getMessageInfo(event.messageID);
