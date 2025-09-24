@@ -12,9 +12,8 @@ module.exports.languages = {
   "en": {
     "invaildNumber": "❌ %1 is not a valid number",
     "cancelSuccess": "✅ Successfully rejected %1 group(s)!",
-    "notiBox1": "✅𝗔𝗽𝗽𝗿𝗼𝘃𝗲𝗱 𝘀𝘂𝗰𝗰𝗲𝘀𝘀𝗳𝘂𝗹𝗹𝘆 𝗯𝘆 𝗥𝗮𝗵𝗮𝘁🐸😘",
-    "notiBox2": `╭•┄┅═══❁🌺❁═══┅┄•╮\n   . 🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰\n╰•┄┅═══❁🌺❁═══┅┄•╯\n
-
+    "notiBox1": "✅𝗔𝗽𝗽𝗿𝗼𝘃𝗲𝗱 𝘀𝘂𝗰𝗰𝗲𝘀𝘀𝗳𝘂𝗹𝗹𝘆 𝗯𝘆 𝗥𝗮𝗵𝗮𝘁🐸",
+    "notiBox2": `╭•┄┅═══❁🌺❁═══┅┄•╮\n    🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰\n╰•┄┅═══❁🌺❁═══┅┄•╯\n\n
 গ্রুপে এড্ড দেওয়ার জন্য ধন্যবাদ🙂😙👻\n
  👇👇Type👇👇
 ${botPrefix}Info \n
