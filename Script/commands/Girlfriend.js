@@ -5,14 +5,20 @@ const path = require("path");
 const { createCanvas, loadImage } = require("canvas");
 
 module.exports.config = {
-  name: "girlfriend",
-  version: "4.1",
-  author: "Rahat Premium",
-  countDown: 5,
-  role: 0,
-  shortDescription: { en: "Couple frame (girlfriend)" },
-  category: "love",
-  guide: { en: "{pn} @mention" }
+ name: "girlfriend",
+ version: "7.3.1",
+ hasPermssion: 0,
+ credits: "—͟͟͞͞𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
+ description: "Get girlfriend From Mention",
+ commandCategory: "img",
+ usages: "[@mention]",
+ cooldowns: 5,
+ dependencies: {
+ "axios": "",
+ "fs-extra": "",
+ "path": "",
+ "jimp": ""
+ }
 };
 
 module.exports.run = async function ({ api, event }) {
