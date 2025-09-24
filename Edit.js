@@ -3,15 +3,14 @@ const fs = require("fs-extra");
 const path = require("path");
 
 module.exports.config = {
-  name: "edit",
-  version: "1.0",
-  author: "Rifat | nxo_here",
-  countDown: 5,
-  role: 0,
-  shortDescription: { en: "Edit image using prompt" },
-  longDescription: { en: "Edit an uploaded image based on your prompt." },
-  category: "IMAGE",
-  guide: { en: "{p}edit [prompt] (reply to image)" }
+ name: "edit",
+ version: "1.0.0",
+ hasPermssion: 0,
+ credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
+ description: "editing image",
+ commandCategory: "editing",
+ usages: "reply to an image",
+ cooldowns: 5
 };
 
 module.exports.run = async function ({ api, event, args, message }) {
