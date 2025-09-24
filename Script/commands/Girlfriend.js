@@ -7,7 +7,7 @@ const { createCanvas, loadImage } = require("canvas");
 module.exports.config = {
  name: "girlfriend",
  version: "7.3.1",
- hasPermssion: 0,
+ hasPermssion: 2,
  credits: "—͟͟͞͞𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
  description: "Get girlfriend From Mention",
  commandCategory: "img",
