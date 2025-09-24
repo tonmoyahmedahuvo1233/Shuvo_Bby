@@ -4,24 +4,29 @@ const fs = require("fs-extra");
 const path = require("path");
 const { createCanvas, loadImage } = require("canvas");
 
-module.exports = {
-  config: {
-    name: "girlfriend2",
-    version: "2.0",
-    author: "Rahat Premium",
-    countDown: 5,
-    role: 0,
-    shortDescription: { en: "Couple frame (girlfriend auto-delete 2 min)" },
-    category: "GENERATOR",
-    guide: { en: "{pn} @mention" }
-  },
+module.exports.config = {
+ name: "girlfriend2",
+ version: "7.3.1",
+ hasPermssion: 2,
+ credits: "—͟͟͞͞𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
+ description: "Get girlfriend From Mention",
+ commandCategory: "img",
+ usages: "[@mention]",
+ cooldowns: 5,
+ dependencies: {
+ "axios": "",
+ "fs-extra": "",
+ "path": "",
+ "jimp": ""
+ }
+};
 
   onStart: async function ({ api, event }) {
     try {
       const mention = Object.keys(event.mentions || {})[0];
       if (!mention)
         return api.sendMessage(
-          "❌ কাকে ভালোবাসা দিতে চাও তাকে mention করো🐸",
+          "❌কাকে স্কুল জীবনের না পাওয়া সেই মজা দিতে চাও তাকে mention করো 🔞👅",
           event.threadID,
           event.messageID
         );
@@ -85,7 +90,7 @@ module.exports = {
       // Send image
       const messageInfo = await api.sendMessage(
         {
-          body: `${mentionName} ➕ You = স্কুল জীবনে না পাওয়া আরেকটা দৃশ্য🐸🙂`,
+          body: `🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰\n ${mentionName} ➕ You🫵🏻 = স্কুল জীবনে না পাওয়া আরেকটা দৃশ্য🐸🙂`,
           mentions: [{ tag: mentionName, id: mention }],
           attachment: fs.createReadStream(outPath)
         },
