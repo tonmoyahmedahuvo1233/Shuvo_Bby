@@ -1,7 +1,7 @@
 module.exports.config = {
   name: "বিদেশি_গরু",
   version: "1.0.0",
-  hasPermssion: 0,
+  hasPermssion: 2,
   credits: "Raiden Ei",
   description: "Random ảnh girl",
   commandCategory: "Random-IMG",
