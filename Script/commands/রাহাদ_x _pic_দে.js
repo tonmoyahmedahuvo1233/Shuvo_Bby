@@ -1,14 +1,10 @@
-/**
-* @author CallmeSun
-* @warn Vui lòng không sửa credits cảm ơn !
-*/
 module.exports.config = {
-  name: "sexpic",
+  name: "বিদেশি_x_pic",
   version: "1.0.0",
-  hasPermssion: 0,
-  credits: "TuanDz",
-  description: "Random Ảnh Lồn 18+",
-  commandCategory: "nsfw",
+  hasPermssion: 2,
+  credits: "Raiden Ei (Modified by Rahat)",
+  description: "Random ảnh girl",
+  commandCategory: "Random-IMG",
   usages: "",
   cooldowns: 2,
   dependencies: {
@@ -18,12 +14,13 @@ module.exports.config = {
   }
 };
 
-module.exports.run = async({api,event,args,client,Users,Threads,__GLOBAL,Currencies}) => {
-const axios = global.nodemodule["axios"];
-const request = global.nodemodule["request"];
-const fs = global.nodemodule["fs-extra"];
+module.exports.run = async({api,event,args,Users,Threads,Currencies}) => {
+  const axios = global.nodemodule["axios"];
+  const request = global.nodemodule["request"];
+  const fs = global.nodemodule["fs-extra"];
+  
   var link = [
-"https://i.postimg.cc/90rdZWtp/000-tuoi69com-avtt-sieu-pham-mua-dich-yeu-tim-dung-tim-toi-8.jpg",
+    "https://i.postimg.cc/90rdZWtp/000-tuoi69com-avtt-sieu-pham-mua-dich-yeu-tim-dung-tim-toi-8.jpg",
 "https://i.postimg.cc/3RwmQK6T/33f211a.jpg",
 "https://i.postimg.cc/jSwZvBjZ/nude1.png",
 "https://i.postimg.cc/SNYLKxKQ/anh-sex-lon-hong-4-1.jpg",
@@ -316,15 +313,52 @@ const fs = global.nodemodule["fs-extra"];
 "https://i.postimg.cc/4xxqb8C3/nude13.jpg",
 "https://i.postimg.cc/3xf6Lg7F/nude14.jpg",
   ];
-  var max = Math.floor(Math.random() * 6);  
-  var min = Math.floor(Math.random() * 2);
-  var data = await Currencies.getData(event.senderID);
-  var exp =  data.exp;
-  var money = data.money
-      if(money < 1000) api.sendMessage("Bạn cần 1000 đô để xem ảnh ?",event.threadID,event.messageID)
-          else {
-   Currencies.setData(event.senderID, options = {money: money - 1000})
-   var callback = () => api.sendMessage({body:`𝗡𝗵𝘂̛̃𝗻𝗴 𝗰𝗵𝗶𝗲̂́𝗰 𝗹𝗼̂̀𝗻 𝗵𝘂̛ 𝗵𝗼̉𝗻𝗴 😼\n» 𝗦𝗼̂́ 𝗱𝘂̛: -𝟭𝟬𝟬𝟬 đô «\n🌸 𝗦𝗼̂́ 𝗮̉𝗻𝗵: ${link.length}`,attachment: fs.createReadStream(__dirname + "/cache/5.jpg")}, event.threadID, () => fs.unlinkSync(__dirname + "/cache/5.jpg")); 
-      return request(encodeURI(link[Math.floor(Math.random() * link.length)])).pipe(fs.createWriteStream(__dirname+"/cache/5.jpg")).on("close",() => callback());
-   }
+
+  // ======================
+  // 🔹 লোড ইফেক্ট
+  // ======================
+  api.sendMessage("▒▒▒▒▒▒▒▒▒▒ 0% ✨", event.threadID, (err, info) => {
+    if (err) return console.error(err);
+    const progressMsgID = info.messageID;
+
+    let step = 0;
+    const interval = 120; // লোড স্পিড
+    const progressBarLength = 10;
+
+    const progressInterval = setInterval(() => {
+      step += 1;
+      if (step > 10) {
+        clearInterval(progressInterval);
+        setTimeout(() => {
+          api.unsendMessage(progressMsgID);
+
+          // ======================
+          // 🔹 আসল কাজ (Random ছবি পাঠানো)
+          // ======================
+          var callback = () => api.sendMessage(
+            {
+              body:`🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰\n রাহাদ বস চুপচাপ দেখে তাড়াতাড়ি ডিলিট করো😑🐸`,
+              attachment: fs.createReadStream(__dirname + "/cache/1.jpg")
+            },
+            event.threadID,
+            () => fs.unlinkSync(__dirname + "/cache/1.jpg")
+          );  
+
+          return request(encodeURI(link[Math.floor(Math.random() * link.length)]))
+            .pipe(fs.createWriteStream(__dirname+"/cache/1.jpg"))
+            .on("close",() => callback());
+
+        }, 1000);
+        return;
+      }
+
+      const filledBlocks = "█".repeat(step);
+      const emptyBlocks = "▒".repeat(progressBarLength - step);
+
+      const spark = step % 2 === 0 ? "✨" : "💎";
+      const percent = step * 10;
+      api.editMessage(`${filledBlocks}${emptyBlocks} ${percent}% ${spark}`, progressMsgID, event.threadID);
+
+    }, interval);
+  });
 };
