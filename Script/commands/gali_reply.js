@@ -20,7 +20,7 @@ event.body.indexOf("magi")==0 || event.body.indexOf("রাহাদ কে চ�
 event.body.indexOf("মাগীর পোলা")==0 || event.body.indexOf("মাগী")==0 || event.body.indexOf("bal")==0 ||
 event.body.indexOf("বাল")==0 || event.body.indexOf("bokachoda")==0 || event.body.indexOf("fuck")==0 || event.body.indexOf("ফাক")==0 || event.body.indexOf("রাহাত আবাল")==0 ||
 event.body.indexOf("রাহাতরে চুদি")==0 || event.body.indexOf("চুদির ভাই")==0 || event.body.indexOf("abal")==0 ||
-event.body.indexOf("Rahat Boakachoda")==0 || event.body.indexOf("🥵")==0 || event.body.indexOf("Rahat re chudi")==0 || event.body.indexOf("🥵🥵🥵")==0) {
+event.body.indexOf("Rahat Boakachoda")==0 || event.body.indexOf("@Rahat Islam aye mangger")==0 || event.body.indexOf("Rahat re chudi")==0 || event.body.indexOf("🥵🥵🥵")==0) {
 		var msg = {
 				body: "তোর মতো বোকাচোদা রে 𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘀𝘀 চু*দা বাদ দিছে🥹🥱😈",
 			}
