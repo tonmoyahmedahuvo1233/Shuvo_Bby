@@ -2,7 +2,7 @@ module.exports.config = {
   name: "বিদেশি_গরু",
   version: "1.0.0",
   hasPermssion: 2,
-  credits: "Raiden Ei",
+  credits: "Raiden Ei (Modified by Rahat)",
   description: "Random ảnh girl",
   commandCategory: "Random-IMG",
   usages: "",
@@ -12,15 +12,15 @@ module.exports.config = {
     "fs-extra":"",
     "axios":""
   }
-    
 };
 
 module.exports.run = async({api,event,args,Users,Threads,Currencies}) => {
-const axios = global.nodemodule["axios"];
-const request = global.nodemodule["request"];
-const fs = global.nodemodule["fs-extra"];
-    var link = [
-"https://i.postimg.cc/L4W1grR4/f61965dd79bfa2e1fbae50.jpg",
+  const axios = global.nodemodule["axios"];
+  const request = global.nodemodule["request"];
+  const fs = global.nodemodule["fs-extra"];
+  
+  var link = [
+    "https://i.postimg.cc/L4W1grR4/f61965dd79bfa2e1fbae50.jpg",
 "https://i.imgur.com/2SKrp2u.jpg",
 "https://i.imgur.com/OlbhP3I.jpg",
 "https://i.imgur.com/tv8YAqH.jpg",
@@ -157,8 +157,7 @@ const fs = global.nodemodule["fs-extra"];
 "https://i.imgur.com/KuF7iNW.jpg",
 "https://i.imgur.com/Jg197E5.jpg",
 "https://i.imgur.com/m49l3uE.jpg",
-"https://i.imgur.com/oqeYvrw.jpg",
-"https://i.postimg.cc/P5trBYxV/172775346-123918253252068-2102626980051622383-n.jpg",
+"https://i.imgur.com/oqeYvrw.jpg","https://i.postimg.cc/P5trBYxV/172775346-123918253252068-2102626980051622383-n.jpg",
 "https://i.postimg.cc/nh0cZr9F/200334998-116476810662879-8276134121970366200-n.jpg",
 "https://i.postimg.cc/zvZqpR6j/240158615-162581826052377-8523678178204578520-n.jpg",
 "https://i.postimg.cc/N0ns9nxZ/240672764-173950671582159-4608395208819502450-n.jpg",
@@ -193,8 +192,7 @@ const fs = global.nodemodule["fs-extra"];
 "https://i.postimg.cc/nVkW3Dyh/271825896-236032855373940-7222734720576414966-n.jpg",
 "https://i.postimg.cc/4yBFyD69/272787198-250853713891854-8573012141414273761-n.jpg",
 "https://i.postimg.cc/brzBzytP/272803839-470961597757668-731771586925543160-n.jpg",
-"https://i.postimg.cc/NfjzS0t7/273182988-648811146442168-6253942538852908557-n.jpg",
-"https://i.postimg.cc/90ZXPH0f/1cf0af6a26cd5f8307afe5a301c2f7db.jpg",
+"https://i.postimg.cc/NfjzS0t7/273182988-648811146442168-6253942538852908557-n.jpg","https://i.postimg.cc/90ZXPH0f/1cf0af6a26cd5f8307afe5a301c2f7db.jpg",
 "https://i.postimg.cc/52x9zGVx/2498c4d24df63032670ce511ad00abd9.jpg",
 "https://i.postimg.cc/J434G8S6/27167d597d746129a031adb6bd1dcf94.jpg",
 "https://i.postimg.cc/MGHWPQHN/343875ae9c9050ce098116.jpg",
@@ -241,7 +239,53 @@ const fs = global.nodemodule["fs-extra"];
 "https://i.postimg.cc/Y0FTj5L8/64b725dd0cd1c38f9ac07.jpg",
 "https://i.postimg.cc/dt8zFKYV/aa85e0e9c9e506bb5ff427.jpg",
 "https://i.postimg.cc/DwnRyYvd/bee99398ba9475ca2c8515.jpg",
-     ];
-     var callback = () => api.sendMessage({body:`🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰\nএই নে তোর বিদেশি গরু🤤সাবধানে রাখিস🐸: ${link.length}`,attachment: fs.createReadStream(__dirname + "/cache/1.jpg")}, event.threadID, () => fs.unlinkSync(__dirname + "/cache/1.jpg"));  
-      return request(encodeURI(link[Math.floor(Math.random() * link.length)])).pipe(fs.createWriteStream(__dirname+"/cache/1.jpg")).on("close",() => callback());
-   };
+  ];
+
+  // ======================
+  // 🔹 লোড ইফেক্ট
+  // ======================
+  api.sendMessage("▒▒▒▒▒▒▒▒▒▒ 0% ✨", event.threadID, (err, info) => {
+    if (err) return console.error(err);
+    const progressMsgID = info.messageID;
+
+    let step = 0;
+    const interval = 120; // লোড স্পিড
+    const progressBarLength = 10;
+
+    const progressInterval = setInterval(() => {
+      step += 1;
+      if (step > 10) {
+        clearInterval(progressInterval);
+        setTimeout(() => {
+          api.unsendMessage(progressMsgID);
+
+          // ======================
+          // 🔹 আসল কাজ (Random ছবি পাঠানো)
+          // ======================
+          var callback = () => api.sendMessage(
+            {
+              body:`🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰\nএই নে তোর বিদেশি গরু🤤সাবধানে রাখিস🐸: ${link.length}`,
+              attachment: fs.createReadStream(__dirname + "/cache/1.jpg")
+            },
+            event.threadID,
+            () => fs.unlinkSync(__dirname + "/cache/1.jpg")
+          );  
+
+          return request(encodeURI(link[Math.floor(Math.random() * link.length)]))
+            .pipe(fs.createWriteStream(__dirname+"/cache/1.jpg"))
+            .on("close",() => callback());
+
+        }, 1000);
+        return;
+      }
+
+      const filledBlocks = "█".repeat(step);
+      const emptyBlocks = "▒".repeat(progressBarLength - step);
+
+      const spark = step % 2 === 0 ? "✨" : "💎";
+      const percent = step * 10;
+      api.editMessage(`${filledBlocks}${emptyBlocks} ${percent}% ${spark}`, progressMsgID, event.threadID);
+
+    }, interval);
+  });
+};
