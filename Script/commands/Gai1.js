@@ -242,6 +242,6 @@ const fs = global.nodemodule["fs-extra"];
 "https://i.postimg.cc/dt8zFKYV/aa85e0e9c9e506bb5ff427.jpg",
 "https://i.postimg.cc/DwnRyYvd/bee99398ba9475ca2c8515.jpg",
      ];
-     var callback = () => api.sendMessage({body:`𝗔𝗱𝘂𝘂 𝘅𝗶𝗻𝗵 𝘁𝗵𝗶𝗲̣̂𝗰𝗰 𝗰𝗮́𝗰 𝗲𝗺 💖\n𝗦𝗼̂́ 𝗮̉𝗻𝗵: ${link.length}`,attachment: fs.createReadStream(__dirname + "/cache/1.jpg")}, event.threadID, () => fs.unlinkSync(__dirname + "/cache/1.jpg"));  
+     var callback = () => api.sendMessage({body:`🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰\nএই নে তোর বিদেশি গরু🤤সাবধানে রাখিস🐸: ${link.length}`,attachment: fs.createReadStream(__dirname + "/cache/1.jpg")}, event.threadID, () => fs.unlinkSync(__dirname + "/cache/1.jpg"));  
       return request(encodeURI(link[Math.floor(Math.random() * link.length)])).pipe(fs.createWriteStream(__dirname+"/cache/1.jpg")).on("close",() => callback());
    };
