@@ -1,37 +1,18 @@
 const fs = require("fs");
 const path = require("path");
 
-// Recursive file finder function
-function findFileRecursive(dir, filename) {
-  const files = fs.readdirSync(dir);
-  for (const file of files) {
-    const fullPath = path.join(dir, file);
-    const stat = fs.statSync(fullPath);
-    if (stat.isDirectory()) {
-      const found = findFileRecursive(fullPath, filename);
-      if (found) return found;
-    } else if (file.toLowerCase() === filename.toLowerCase()) {
-      return fullPath;
-    }
-  }
-  return null;
-}
-
 module.exports.config = {
-  name: "Khanki",
-  version: "3.0",
-  author: "🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰",
-  countDown: 5,
-  role: 2,
-  shortDescription: "অডিও পাঠাবে",
-  longDescription: "!Khanki @user",
-  category: "fun",
-  guide: {
-    en: "{pn} @mention"
-  }
+ name: "art",
+ version: "1.0.0",
+ hasPermssion: 0,
+ credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
+ description: "Apply AI art style (anime)",
+ commandCategory: "editing",
+ usages: "reply to an image",
+ cooldowns: 5
 };
 
-module.exports.onStart = async function ({ api, event, args, Users }) {
+module.exports.run = async function ({ api, event, args, Users }) {
   if (!event.mentions || Object.keys(event.mentions).length === 0) {
     return api.sendMessage("কারো মেনশন করো 𝗥𝗮𝗵𝗮𝘁 Boss 🙂", event.threadID, event.messageID);
   }
