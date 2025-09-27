@@ -24,7 +24,7 @@ module.exports.config = {
   countDown: 5,
   role: 2,
   shortDescription: "অডিও পাঠাবে",
-  longDescription: "!Khanki @user '",
+  longDescription: "!Khanki @user",
   category: "fun",
   guide: {
     en: "{pn} @mention"
