@@ -1,6 +1,6 @@
 module.exports.config = {
   name: "daily",
-  version: "1.0.0",
+  version: "1.0.1",
   hasPermssion: 0,
   credits: "GPT",
   description: "Claim your daily Coins and EXP reward",
@@ -12,7 +12,9 @@ module.exports.config = {
 module.exports.run = async function ({ api, event, Users }) {
   try {
     const userID = event.senderID;
-    const userData = await Users.getData(userID);
+    let userData = await Users.getData(userID);
+    if (!userData) userData = {};
+
     const now = Date.now();
     const oneDay = 24 * 60 * 60 * 1000;
 
@@ -34,6 +36,7 @@ module.exports.run = async function ({ api, event, Users }) {
     const rewardExp = 200;
 
     await Users.setData(userID, {
+      ...userData,
       money: (userData.money || 0) + rewardCoins,
       exp: (userData.exp || 0) + rewardExp,
       lastDaily: now
