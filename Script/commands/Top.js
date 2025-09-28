@@ -1,64 +1,106 @@
-// 📄 top.js
-const fs = require("fs");
-const path = __dirname + "/coinxbalance.json";
-
-function loadData() {
-  if (!fs.existsSync(path)) {
-    fs.writeFileSync(path, JSON.stringify({}, null, 2));
-  }
-  return JSON.parse(fs.readFileSync(path));
-}
-
-// ব্যালেন্স ফরম্যাটিং (balance.js-এর মতো)
-function formatBalance(num) {
-  if (num >= 1e12) return (num / 1e12).toFixed(1).replace(/\.0$/, '') + "T$";
-  if (num >= 1e9) return (num / 1e9).toFixed(1).replace(/\.0$/, '') + "B$";
-  if (num >= 1e6) return (num / 1e6).toFixed(1).replace(/\.0$/, '') + "M$";
-  if (num >= 1e3) return (num / 1e3).toFixed(1).replace(/\.0$/, '') + "k$";
-  return num + "$";
-}
-
 module.exports.config = {
   name: "top",
-  version: "1.0.0",
+  version: "0.0.5",
   hasPermssion: 0,
-  credits: "Akash × ChatGPT",
-  description: "📊 Show Top Richest Users Leaderboard",
-  commandCategory: "Economy",
-  usages: "/top",
+  credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
+  description: "Top Server!",
+  commandCategory: "group",
+  usages: "[thread/user/money/level]",
   cooldowns: 5
 };
 
-module.exports.run = async function({ api, event, Users }) {
-  const { threadID, messageID } = event;
+module.exports.run = async ({ event, api, args, Currencies, Users }) => {
+    const { threadID, messageID } = event;
 
-  const data = loadData();
-  const entries = Object.entries(data);
 
-  if (entries.length === 0) {
-    return api.sendMessage("📢 No users found in the leaderboard yet!", threadID, messageID);
-  }
+  ///////////////////////////////////////////
+  //===== Check if there is a limit or not =====//
+  if (args[1] && isNaN(args[1]) || parseInt(args[1]) <= 0) return api.sendMessage("list length information must be a number and not less than 0", event.threadID, event.messageID);
+  var option = parseInt(args[1] || 10);
+  var data, msg = "";
 
-  // Sort by balance descending
-  const sorted = entries.sort((a, b) => b[1].balance - a[1].balance);
-
-  // Top 10
-  const top10 = sorted.slice(0, 10);
-
-  let msg = "🏆 𝗧𝗼𝗽 𝟭𝟬 𝗥𝗶𝗰𝗵𝗲𝘀𝘁 𝗨𝘀𝗲𝗿𝘀 🏆\n━━━━━━━━━━━━━━━━━━\n";
-
-  for (let i = 0; i < top10.length; i++) {
-    const [userID, info] = top10[i];
-    let name;
-    try {
-      name = await Users.getNameUser(userID);
-    } catch {
-      name = `Unknown (${userID})`;
+  ///////////////////////////////////////
+  //===== Check the case =====//
+  var fs = require("fs-extra");
+  var request = require("request");  // Covernt exp to level
+    function expToLevel(point) {
+  if (point < 0) return 0;
+  return Math.floor((Math.sqrt(1 + (4 * point) / 3) + 1) / 2);
     }
-    msg += `${i + 1}. ${name} → ${formatBalance(info.balance)}\n`;
+    //level 
+    if (args[0] == "user") { 
+    let all = await Currencies.getAll(['userID', 'exp']);
+        all.sort((a, b) => b.exp - a.exp);
+        let num = 0;
+               let msg = {
+          body: 'The 10 People Highest Level On Server!',
+          
+        }
+        for (var i = 0; i < 10; i++) {
+           
+   
+          let level = expToLevel(all[i].exp);
+          var name = (await Users.getData(all[i].userID)).name;      
+  
+          num += 1;
+          msg.body += '\n' + num + '. ' + name + ' - level ' + level;}
+           console.log(msg.body)
+                    api.sendMessage(msg, event.threadID, event.messageID)
+    }
+  if (args[0] == "thread") {
+    var threadList = [];
+    
+    //////////////////////////////////////////////
+    //===== Get the entire group and message number =====//
+    try {
+          data = await api.getThreadList(option + 10, null, ["INBOX"]);
+    }
+    catch (e) {
+      console.log(e);
+    }
+
+    for (const thread of data) {
+      if (thread.isGroup == true) threadList.push({ threadName: thread.name, threadID: thread.threadID, messageCount: thread.messageCount });
+    }
+    
+    /////////////////////////////////////////////////////
+    //===== Sort from highest to lowest for each group =====//
+    threadList.sort((a, b) => {
+      if (a.messageCount > b.messageCount) return -1;
+            if (a.messageCount < b.messageCount) return 1;
+    })
+
+    ///////////////////////////////////////////////////////////////
+    //===== Start getting the push list into the return template =====//
+    var i = 0;
+    for(const dataThread of threadList) {
+      if (i == option) break;
+      msg += `${i+1}/ ${(dataThread.threadName)||"No name"}\nTID: [${dataThread.threadID}]\nNumber of message: ${dataThread.messageCount} message\n\n`;
+      i+=1;
+    }
+    
+    return api.sendMessage(`Top ${threadList.length} Groups Have The Most Number Of Message:\n_____________________________\n${msg}\n_____________________________`, threadID, messageID);
   }
+  
+ if (args[0] == "money") { 
+    let all = await Currencies.getAll(['userID', 'money']);
+        all.sort((a, b) => b.money - a.money);
+        let num = 0;
+               let msg = {
+          body: 'The 10 People Richest On Server!',
+          
+        }
+        for (var i = 0; i < 10; i++) {
+        
+   
+          let level = all[i].money;
+      
+          var name = (await Users.getData(all[i].userID)).name;    
+                    
+          num += 1;
+          msg.body += '\n' + num + '. ' + name + ': ' + level + "💵";}
+                    console.log(msg.body)
+                    api.sendMessage(msg, event.threadID, event.messageID)
+    }
 
-  msg += "━━━━━━━━━━━━━━━━━━\n💰 Keep playing to rank up!";
-
-  return api.sendMessage(msg, threadID, messageID);
-};
+}
