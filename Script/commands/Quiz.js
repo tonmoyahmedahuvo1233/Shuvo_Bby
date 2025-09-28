@@ -7,9 +7,9 @@ async function getBaseApiUrl() {
 
 module.exports.config = {
   name: "quiz",
-  version: "1.0.0",
+  version: "1.0.1",
   hasPermssion: 0,
-  credits: "Dipto | Converted by GPT",
+  credits: "Dipto | GPT",
   description: "Play a quiz game in Bangla or English",
   commandCategory: "game",
   usages: "[bn/en]",
@@ -40,6 +40,7 @@ module.exports.run = async function ({ api, event, args, Users }) {
 
     api.sendMessage(msg, event.threadID, (err, info) => {
       if (err) return console.error(err);
+      if (!global.client.handleReply) global.client.handleReply = [];
       global.client.handleReply.push({
         name: this.config.name,
         messageID: info.messageID,
@@ -51,9 +52,7 @@ module.exports.run = async function ({ api, event, args, Users }) {
         playerName: name
       });
 
-      setTimeout(() => {
-        api.unsendMessage(info.messageID);
-      }, 300 * 1000); // 5 মিনিট পরে মেসেজ রিমুভ
+      setTimeout(() => api.unsendMessage(info.messageID), 300 * 1000);
     }, event.messageID);
 
   } catch (error) {
@@ -80,11 +79,11 @@ module.exports.handleReply = async function ({ api, event, handleReply, Users })
     api.unsendMessage(handleReply.messageID);
     const rewardCoins = 300;
     const rewardExp = 100;
-
     let userData = await Users.getData(author);
     await Users.setData(author, {
-      money: userData.money + rewardCoins,
-      exp: userData.exp + rewardExp
+      ...userData,
+      money: (userData.money || 0) + rewardCoins,
+      exp: (userData.exp || 0) + rewardExp
     });
 
     return api.sendMessage(
