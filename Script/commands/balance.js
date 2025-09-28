@@ -1,6 +1,6 @@
 module.exports.config = {
   name: "balance",
-  version: "1.0.0",
+  version: "1.0.1",
   hasPermssion: 0,
   credits: "GPT",
   description: "Check your total Coins and EXP",
@@ -10,11 +10,13 @@ module.exports.config = {
 };
 
 module.exports.run = async function ({ api, event, Users }) {
-  const mention = Object.keys(event.mentions)[0];
+  const mention = Object.keys(event.mentions || {})[0];
   const userID = mention || event.senderID;
   const name = mention ? event.mentions[mention].replace("@", "") : await Users.getNameUser(userID);
 
-  const userData = await Users.getData(userID);
+  let userData = await Users.getData(userID);
+  if (!userData) userData = {};
+
   const balance = userData.money || 0;
   const exp = userData.exp || 0;
 
