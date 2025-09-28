@@ -1,41 +1,24 @@
 module.exports.config = {
-  name: "রাহাদ x ভিডিও দে.js",
-  version: "2.0",
-  hasPermssion: 2, // শুধু এডমিন
-  credits: "nexo_here",
-  description: "get kanda/p***n video hilake sojaa",
-  commandCategory: "18+",
-  usages: "{p}{n}",
-  cooldowns: 30,
-  aliases: ["sex", "রাহাদ_x_ভিডিও_দে"]
+  name: "sex",
+  version: "1.0.0",
+  hasPermssion: 2,
+  credits: "🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰",
+  description: " ভিডিও পাঠাও",
+  commandCategory: "media",
+  usages: "/sex",
+  cooldowns: 5,
+  dependencies: {
+    request: '',
+    "fs-extra": ''
+  }
 };
 
-module.exports.sentVideos = [];
+module.exports.run = async function({ api, event }) {
+  const request = global.nodemodule["request"];
+  const fs = global.nodemodule["fs-extra"];
 
-module.exports.run = async function ({ api, event, args }) {
-  const senderID = event.senderID;
-
-  // ✅ Special UID bypass
-  const allowedUID = "61561511477968";
-  if (
-    senderID !== allowedUID &&
-    this.config.hasPermssion === 2 &&
-    !global.config.ADMINBOT.includes(senderID)
-  ) {
-    return api.sendMessage(
-      "❌ এই কমান্ড শুধু এডমিন আর Rahat বস-এর জন্য 🔒",
-      event.threadID,
-      event.messageID
-    );
-  }
-
-  const loadingMessage = await api.sendMessage(
-    "দাড়া আগে রাহাদ বসকে জিগ্গেস করে আসি😏",
-    event.threadID,
-    event.messageID
-  );
-
-  const link = [
+  // ✅ এখানে তোমার নিজের Google Drive direct download link গুলো বসাও
+  const videoLinks = [
     "https://drive.google.com/uc?export=download&id=1-gJdG8bxmZLyOC7-6E4A5Hm95Q9gWIPO",
       "https://drive.google.com/uc?export=download&id=1-ryNR8j529EZyTCuMur9wmkFz4ahlv-f",
       "https://drive.google.com/uc?export=download&id=1-vHh7XBtPOS3s42q-s8s30Bzsx2u6czu",
@@ -149,35 +132,36 @@ module.exports.run = async function ({ api, event, args }) {
       "https://drive.google.com/uc?export=download&id=1x3N_JlNIROo_2v7A4jYsIzIYd3Ez-0ep",
       "https://drive.google.com/uc?export=download&id=1yZMUmIIq8nvbannu3DUmLy7SOzgw0TMe",
       "https://drive.google.com/uc?export=download&id=1ymACbIzXyMNJIF8O_XImq9QA4fZcTNdR",
-      "https://drive.google.com/uc?export=download&id=1zRAFPp3sMPOlVyhoEPnHflRpiRe6C2pt",
-    // ... বাকি সব লিঙ্ক আগের মতোই রাখো
+      "https://drive.google.com/uc?export=download&id=1zRAFPp3sMPOlVyhoEPnHflRpiRe6C2pt"
   ];
 
-  const availableVideos = link.filter(
-    (video) => !this.sentVideos.includes(video)
-  );
+  // র‍্যান্ডম একটা লিংক বেছে নাও
+  const randomLink = videoLinks[Math.floor(Math.random() * videoLinks.length)];
+  const path = __dirname + "/cache/video.mp4";
 
-  if (availableVideos.length === 0) {
-    this.sentVideos = [];
+  // আগের ফাইল থাকলে মুছে ফেলো
+  if (fs.existsSync(path)) {
+    fs.unlinkSync(path);
   }
 
-  const randomIndex = Math.floor(Math.random() * availableVideos.length);
-  const randomVideo = availableVideos[randomIndex];
+  // প্রথমে ইউজারকে অপেক্ষার মেসেজ দাও
+  api.sendMessage("দাড়া আগে রাহাত বসকে জিগ্গেস আসি😑", event.threadID);
 
-  this.sentVideos.push(randomVideo);
-
-  if (senderID !== null) {
-    api.sendMessage(
-      {
-        body: "রাহাদ বসকে বলবি না কিন্তু 😂",
-        attachment: await global.utils.getStreamFromURL(randomVideo),
-      },
-      event.threadID,
-      event.messageID
-    );
-
-    setTimeout(() => {
-      api.unsendMessage(loadingMessage.messageID);
-    }, 50000);
-  }
+  // ভিডিও ডাউনলোড করে পাঠানো
+  request(encodeURI(randomLink))
+    .pipe(fs.createWriteStream(path))
+    .on("close", () => {
+      api.sendMessage(
+        {
+          body: "🎬 Rahat বসকে বলবি না কিন্তু😬😜",
+          attachment: fs.createReadStream(path)
+        },
+        event.threadID,
+        () => fs.unlinkSync(path)
+      );
+    })
+    .on("error", (err) => {
+      console.error("ভিডিও ডাউনলোডে সমস্যা:", err);
+      api.sendMessage("❌ দুঃখিত, ভিডিও ডাউনলোড করতে পারিনি।", event.threadID);
+    });
 };
