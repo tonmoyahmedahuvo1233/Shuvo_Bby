@@ -1,39 +1,26 @@
-const EcoData = require("./economyData");
+const usersData = require("../database/usersData");
+const moment = require("moment-timezone");
 
 module.exports.config = {
   name: "daily",
   version: "1.0",
-  hasPermssion: 0,
-  credits: "GPT",
-  description: "Claim daily Coins & EXP",
-  commandCategory: "economy",
-  usages: "",
-  cooldowns: 5
+  author: "ChatGPT × Akash",
+  countDown: 5,
+  role: 0,
+  description: "Claim your daily reward"
 };
 
-module.exports.run = async function({ api, event, Users }) {
-  const userID = event.senderID;
-  const userData = await EcoData.get(userID, Users);
+module.exports.run = async function({ api, event }) {
+  const user = usersData.getUser(event.senderID);
+  const dateTime = moment.tz("Asia/Dhaka").format("DD/MM/YYYY");
 
-  const now = Date.now();
-  const oneDay = 24 * 60 * 60 * 1000;
+  if (user.data.lastDaily === dateTime)
+    return api.sendMessage("⏰ আজকের daily reward আপনি নিয়ে নিয়েছেন!", event.threadID);
 
-  if (now - userData.lastDaily < oneDay) {
-    const remaining = oneDay - (now - userData.lastDaily);
-    const hours = Math.floor(remaining / (1000 * 60 * 60));
-    const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-    return api.sendMessage(`⏳ Already claimed! Next claim in: ${hours}h ${minutes}m ${seconds}s`, event.threadID, event.messageID);
-  }
+  const reward = 500;
+  user.money += reward;
+  user.data.lastDaily = dateTime;
+  usersData.setUser(event.senderID, user);
 
-  const rewardCoins = 500;
-  const rewardExp = 200;
-
-  userData.money += rewardCoins;
-  userData.exp += rewardExp;
-  userData.lastDaily = now;
-
-  await EcoData.set(userID, Users, userData);
-
-  return api.sendMessage(`🎉 Daily Reward Claimed!\n🪙 Coins: ${rewardCoins}\n🌟 EXP: ${rewardExp}`, event.threadID, event.messageID);
+  api.sendMessage(`🎁 আজকের reward: +${reward} কয়েন`, event.threadID);
 };
