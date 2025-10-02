@@ -1,4 +1,5 @@
-const usersData = require("../database/usersData");
+const fs = require("fs");
+const path = __dirname + "/coinxbalance.json";
 
 // coinxbalance.json না থাকলে বানানো
 if (!fs.existsSync(path)) {
