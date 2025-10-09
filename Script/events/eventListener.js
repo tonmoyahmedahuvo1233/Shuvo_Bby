@@ -5,7 +5,7 @@ const cacheFolder = path.join(__dirname, "../cache");
 if (!fs.existsSync(cacheFolder)) fs.mkdirSync(cacheFolder);
 
 module.exports.config = {
-    name: "guard",
+    name: "eventlistener",
     eventType: ["log:thread-name", "log:thread-image"],
     version: "1.0.0",
     credits: "Akash × ChatGPT",
