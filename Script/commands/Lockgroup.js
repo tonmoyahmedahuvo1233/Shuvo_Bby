@@ -5,14 +5,14 @@ const cacheFolder = path.join(__dirname, "cache");
 if (!fs.existsSync(cacheFolder)) fs.mkdirSync(cacheFolder);
 
 module.exports.config = {
-  name: "lockgroup",
-  version: "2.0",
-  author: "Akash × ChatGPT",
-  role: 1, // admin required
-  shortDescription: "Lock group profile & name permanently",
-  longDescription: "Prevent non-admins from changing group profile picture or name",
-  category: "group",
-  guide: "{p}lockgroup"
+    name: "lock",
+    version: "1.0.0",
+    credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
+    hasPermssion: 2,
+    description: "Turn off antiout",
+    usages: "antiout on/off",
+    commandCategory: "system",
+    cooldowns: 0
 };
 
 module.exports.run = async function ({ api, event }) {
