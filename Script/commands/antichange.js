@@ -1,73 +1,81 @@
 const fs = require("fs");
 const path = require("path");
-const axios = require("axios");
 
-module.exports = {
-  config: {
+const dataPath = path.join(__dirname, "antichange_data");
+
+if (!fs.existsSync(dataPath)) fs.mkdirSync(dataPath);
+
+module.exports.config = {
     name: "antichange",
-    version: "1.0",
-    author: "Akash × ChatGPT",
-    role: 1,
-    shortDescription: "Protect group name and profile photo",
-    longDescription: "Prevents non-admin users from changing group name or group profile photo.",
-    category: "group",
-  },
+    version: "1.0.0",
+    author: "Rahat × ChatGPT",
+    role: 2,
+    description: "Prevent group name/profile change by non-admins",
+    usages: "antichange [on/off]",
+    cooldowns: 3
+};
 
-  onLoad: async function ({ api, event }) {
-    const folder = path.join(__dirname, "antichange_data");
-    if (!fs.existsSync(folder)) fs.mkdirSync(folder);
-  },
-
-  onEvent: async function ({ api, event, Threads }) {
+module.exports.run = async function({ api, event, args }) {
     const threadID = event.threadID;
-    const folder = path.join(__dirname, "antichange_data");
-    const dataFile = path.join(folder, `${threadID}.json`);
+    const file = path.join(dataPath, `${threadID}.json`);
 
-    // Load or create data file
-    let data = {};
-    if (fs.existsSync(dataFile)) {
-      data = JSON.parse(fs.readFileSync(dataFile));
+    if (args[0] === "on") {
+        fs.writeFileSync(file, JSON.stringify({
+            protect: true,
+            name: "",
+            image: ""
+        }, null, 2));
+        api.sendMessage("🛡️ Anti-change system activated for this group!", threadID);
+    } 
+    else if (args[0] === "off") {
+        if (fs.existsSync(file)) fs.unlinkSync(file);
+        api.sendMessage("❌ Anti-change system disabled.", threadID);
+    } 
+    else {
+        api.sendMessage("🔧 Use: antichange on / off", threadID);
     }
+};
 
-    // Event: Group info changed
-    if (event.logMessageType === "log:thread-name") {
-      const author = event.author;
-      const threadInfo = await api.getThreadInfo(threadID);
-      const admins = threadInfo.adminIDs.map(a => a.id);
+// when someone changes group info
+module.exports.handleEvent = async function({ api, event }) {
+    try {
+        const threadID = event.threadID;
+        const file = path.join(__dirname, "antichange_data", `${threadID}.json`);
+        if (!fs.existsSync(file)) return;
+        
+        const data = JSON.parse(fs.readFileSync(file));
+        if (!data.protect) return;
 
-      if (!admins.includes(author)) {
-        // Non-admin changed group name — revert
-        const oldName = data.name || threadInfo.threadName;
-        await api.setTitle(oldName, threadID);
-        api.sendMessage("⚠️ শুধুমাত্র অ্যাডমিনরা গ্রুপের নাম পরিবর্তন করতে পারে!", threadID);
-      } else {
-        // Admin changed — save new name
-        data.name = threadInfo.threadName;
-        fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
-      }
-    }
+        const info = await api.getThreadInfo(threadID);
+        const admins = info.adminIDs.map(a => a.id);
 
-    // Event: Group profile picture changed
-    if (event.logMessageType === "log:thread-image") {
-      const author = event.author;
-      const threadInfo = await api.getThreadInfo(threadID);
-      const admins = threadInfo.adminIDs.map(a => a.id);
-
-      if (!admins.includes(author)) {
-        // Revert old photo if available
-        if (data.photo) {
-          const img = (await axios.get(data.photo, { responseType: "stream" })).data;
-          await api.changeGroupImage(img, threadID);
-          api.sendMessage("⚠️ শুধুমাত্র অ্যাডমিনরা গ্রুপের ছবি পরিবর্তন করতে পারে!", threadID);
+        if (!admins.includes(event.author)) {
+            // someone else tried to change name or image
+            if (event.logMessageType === "log:thread-name") {
+                await api.setTitle(data.name || info.threadName, threadID);
+                api.sendMessage("🚫 Group name change blocked! Admin only.", threadID);
+            }
+            if (event.logMessageType === "log:thread-image") {
+                if (data.image) {
+                    const stream = fs.createReadStream(data.image);
+                    await api.changeGroupImage(stream, threadID);
+                    api.sendMessage("🚫 Group image change blocked! Admin only.", threadID);
+                }
+            }
+        } else {
+            // save admin-approved changes
+            if (event.logMessageType === "log:thread-name") {
+                data.name = info.threadName;
+            }
+            if (event.logMessageType === "log:thread-image") {
+                const imgPath = path.join(__dirname, "antichange_data", `${threadID}_image.png`);
+                const image = await api.getCurrentUserProfilePicture();
+                fs.writeFileSync(imgPath, image);
+                data.image = imgPath;
+            }
+            fs.writeFileSync(file, JSON.stringify(data, null, 2));
         }
-      } else {
-        // Admin changed — save new photo
-        const photoUrl = threadInfo.imageSrc;
-        if (photoUrl) {
-          data.photo = photoUrl;
-          fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
-        }
-      }
+    } catch (err) {
+        console.error(err);
     }
-  },
 };
