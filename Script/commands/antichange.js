@@ -6,13 +6,14 @@ const dataPath = path.join(__dirname, "antichange_data");
 if (!fs.existsSync(dataPath)) fs.mkdirSync(dataPath);
 
 module.exports.config = {
-    name: "antichange",
+    name: "antijoin",
     version: "1.0.0",
-    author: "Rahat × ChatGPT",
-    role: 2,
-    description: "Prevent group name/profile change by non-admins",
-    usages: "antichange [on/off]",
-    cooldowns: 3
+    credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
+    hasPermssion: 2,
+    description: "Turn off antijoin",
+    usages: "antijoin on/off",
+    commandCategory: "system",
+    cooldowns: 0
 };
 
 module.exports.run = async function({ api, event, args }) {
