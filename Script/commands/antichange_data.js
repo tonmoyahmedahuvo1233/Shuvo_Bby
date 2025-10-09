@@ -4,11 +4,14 @@ const path = require("path");
 const dataPath = path.join(__dirname, "antichange_data");
 
 module.exports.config = {
-    name: "antichange_data",
+    name: "antichangedata",
     version: "1.0.0",
-    author: "Rahat × ChatGPT",
-    role: 2,
-    description: "Show saved anti-change data"
+    credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
+    hasPermssion: 2,
+    description: "Turn off antijoin",
+    usages: "antijoin on/off",
+    commandCategory: "system",
+    cooldowns: 0
 };
 
 module.exports.run = function({ api, event }) {
