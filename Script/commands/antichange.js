@@ -6,11 +6,11 @@ const dataPath = path.join(__dirname, "antichange_data");
 if (!fs.existsSync(dataPath)) fs.mkdirSync(dataPath);
 
 module.exports.config = {
-    name: "antijoin",
+    name: "antichange",
     version: "1.0.0",
     credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
     hasPermssion: 2,
-    description: "Turn off antijoin",
+    description: "Turn off antichange",
     usages: "antijoin on/off",
     commandCategory: "system",
     cooldowns: 0
