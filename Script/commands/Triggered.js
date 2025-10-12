@@ -8,31 +8,12 @@ module.exports.config = {
  cooldowns: 5
 };
 
-module.exports.run = async function({ api, event, args, Users, kernel }) {
-    try {
-        // কোন ইউজারের ছবি নেবে সেটা চেক করা
-        let mentions = Object.keys(event.mentions);
-        let targetID;
-
-        if (event.type === "message_reply" && event.messageReply.attachments.length > 0 && event.messageReply.attachments[0].type === "photo") {
-            targetID = await kernel.readImageFromURL(event.messageReply.attachments[0].url);
-        } else if (mentions.length > 0) {
-            targetID = await Users.getImage(mentions[0]);
-        } else {
-            targetID = await Users.getImage(event.senderID);
-        }
-
-        // Triggered ইফেক্ট প্রোসেস করা
-        const triggeredImage = await kernel.readStream(["triggered"], { targetID: targetID });
-
-        // মেসেজ পাঠানো
-        return api.sendMessage({
-            body: "Here’s your triggered pic!",
-            attachment: triggeredImage
-        }, event.threadID, event.messageID);
-
-    } catch (error) {
-        console.error(error);
-        return api.sendMessage("⚠️ কিছু একটা ভুল হয়েছে। আবার চেষ্টা করুন।", event.threadID, event.messageID);
-    }
-};
+export const domain = {"triggered": setup.name}
+export const execCommand = async function({api, event, key, kernel, umaru, args, Users, context}) {
+await umaru.createJournal(event);
+let mentions = Object.keys(event.mentions);
+(mentions.length === 0 && /^[0-9]+$/.test(args[0])) ? mentions[0] = args[0]: (event.type == "message_reply" && event.messageReply.attachments.length !== 0 && event.messageReply.attachments[0].type == "photo") ? "" : (event.type == "message_reply") ? mentions[0] = event.messageReply.senderID : (mentions.length === 0) ? mentions[0] = event.senderID: mentions[0] = mentions[0];
+return api.sendMessage({body: context, attachment: await kernel.readStream(["triggered"], {key: key, targetID: (event.type == "message_reply" && event.messageReply.attachments.length !== 0 && event.messageReply.attachments[0].type == "photo") ? await kernel.readImageFromURL(event.messageReply.attachments[0].url) :await Users.getImage(mentions[0])})}, event.threadID, async() => {
+await umaru.deleteJournal(event);
+}, event.messageID)
+}
