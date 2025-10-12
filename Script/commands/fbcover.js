@@ -1,101 +1,80 @@
 module.exports.config = {
   name: "fbcover",
-  version: "1.0.0",
+  version: "1.0.1",
   hasPermssion: 0,
-  credits: "HieuHapHoi",
-  description: "banner",
+  credits: "Rahat (Modified)",
+  description: "বাংলায় FB Cover তৈরি করুন",
   commandCategory: "Image",
   usages: "",
   cooldowns: 5
 };
 
 module.exports.run = async function({ api, args, event }) {
-
-  const { threadID, messageID, senderID, body } = event;
-  
-  const request = require("request");
+  const { threadID, messageID, senderID } = event;
   const axios = require("axios");
   const fs = require("fs-extra");
-  
+  const request = require("request");
+
   if(args[0] == "list") {
+    const res = await axios.get("https://api.nguyenmanh.name.vn/taoanhdep/list");
+    let page = parseInt(args[1]) || 1;
+    if(page < 1) page = 1;
+    const limit = 11;
+    const total = res.data.listAnime.length;
+    const totalPages = Math.ceil(total / limit);
+    let msg = "";
+    for(let i = limit * (page-1); i < limit*page; i++){
+      if(i >= total) break;
+      msg += `${i+1}. ${res.data.listAnime[i].name}\n`;
+    }
+    msg += `» মোট চরিত্র: ${total}\n» পৃষ্ঠা (${page}/${totalPages})\n» পরবর্তী পৃষ্ঠা দেখতে /fbcover list <page>`;
+    return api.sendMessage(`●─●চরিত্র তালিকা●─●\n${msg}\n●──●শেষ●──●`, threadID, messageID);
+  }
 
-      const res = await axios.get("https://api.nguyenmanh.name.vn/taoanhdep/list");
-      
-      var trang = 1;
-      trang = parseInt(args[1]) || 1;
-      trang < -1 ? trang = 1 : "";
-      var limit = 11;
-      var danhsach = res.data.listAnime.length;
-      var soTrang = Math.ceil(danhsach / limit);
-      var msg = [];
-
-      for (var i = limit * (trang - 1); i < limit * (trang - 1) + limit; i++) {
-          if (i >= danhsach) break;
-          var nv = res.data.listAnime[i].name;
-          msg += `${i + 1}. ${nv}\n`
-      }
-
-      msg += `» Có tất cả ${danhsach} nhân vật\n» Số trang (${trang}/${soTrang})\n» Dùng ${global.config.PREFIX}fbcover list <số trang> để có thể xem trang tiếp theo`;
-    return api.sendMessage(`●─●Emilia●──●\n` + msg + `\n●──●End●──●`, threadID, messageID);
-    } else if(args[0] == "find"){
-   var char = args[1];
-    
+  else if(args[0] == "find"){
+    let char = args[1];
+    if(!char) return api.sendMessage("চরিত্রের নাম লিখুন।", threadID, messageID);
     const res = await axios.get(`https://api.nguyenmanh.name.vn/taoanhdep/search?key=${encodeURIComponent(char)}`);
+    let id = res.data.ID;
+    return api.sendMessage(`${char} এর ID হলো: ${id}`, threadID, messageID);
+  }
 
-    
-    var id = res.data.ID;
-     
-     return api.sendMessage(`ID của ${char} là: ${id}`, threadID, messageID);
-     
-   } 
-    
-   else if(args[0] == "color") {
+  else if(args[0] == "color"){
+    const url = "https://4.bp.blogspot.com/-_nVsmtO-a8o/VYfZIUJXydI/AAAAAAAACBQ/FHfioHYszpk/w1200-h630-p-k-no-nu/cac-mau-trong-tieng-anh.jpg";
+    const path = __dirname + `/cache/colors.jpg`;
+    const callback = () => {
+      api.sendMessage({ body: "রঙের তালিকা:", attachment: fs.createReadStream(path) }, threadID, () => fs.unlinkSync(path));
+    }
+    request(encodeURI(url)).pipe(fs.createWriteStream(path)).on("close", callback);
+  }
 
-      const mautienganh = "https://4.bp.blogspot.com/-_nVsmtO-a8o/VYfZIUJXydI/AAAAAAAACBQ/FHfioHYszpk/w1200-h630-p-k-no-nu/cac-mau-trong-tieng-anh.jpg";
-      var callback = () => {
-          api.sendMessage({
-              body: "[ Danh sách màu tiếng Anh ]",
-              attachment: fs.createReadStream(__dirname + `/cache/mautienganh.jpg`)
-          }, threadID, () => fs.unlinkSync(__dirname + `/cache/mautienganh.jpg`))
-      };
-
-      request(encodeURI(mautienganh)).pipe(fs.createWriteStream(__dirname + `/cache/mautienganh.jpg`)).on("close", callback);
-
-  } else {
-      return api.sendMessage(`» Reply tin nhắn kèm với ID nhân vật mà bạn muốn chọn`, threadID, (error, info) => {
-          return global.client.handleReply.push ({
-              type: "characters",
-              name: this.config.name,
-              author: senderID,
-              messageID: info.messageID
-          })
-      }, event.messageID);
+  else {
+    return api.sendMessage(`» চরিত্রের ID দিয়ে reply করুন যা আপনি ব্যবহার করতে চান।`, threadID, (error, info) => {
+      return global.client.handleReply.push({
+        type: "characters",
+        name: this.config.name,
+        author: senderID,
+        messageID: info.messageID
+      })
+    }, messageID);
   }
 }
 
-module.exports.handleReply = async function({ api, event, args, handleReply, client, __GLOBAL, Threads, Users, Currencies }) {
+module.exports.handleReply = async function({ api, event, handleReply }) {
+  const { threadID, messageID, senderID } = event;
   const axios = require("axios");
-  const fs = require("fs-extra");
-  const request = require("request");
-  
-  if (handleReply.author != event.senderID) return api.sendMessage('Bạn không có quyền trả lời tin nhắn này', event.threaID);
-  const {
-    threadID,
-    messageID,
-    senderID
-  } = event;
 
-  switch (handleReply.type) {
+  if(handleReply.author != senderID) return api.sendMessage("আপনি এই মেসেজের উত্তর দেওয়ার অনুমতি নেই।", threadID);
+
+  switch(handleReply.type){
     case "characters": {
       const res = await axios.get(`https://api.nguyenmanh.name.vn/taoanhdep/search/id?id=${event.body}`);
-
-      var name = res.data.name
-      
+      const name = res.data.name;
       api.unsendMessage(handleReply.messageID);
-      return api.sendMessage(`» Bạn đã chọn ID nhân vật là ${name}\n» Reply tin nhắn này và nhập tên của bạn`, threadID, (error, info) => {
+      return api.sendMessage(`» আপনি নির্বাচন করেছেন: ${name}\n» এবার reply করুন আপনার নাম লিখতে।`, threadID, (error, info) => {
         return global.client.handleReply.push({
-          type: 'subname',
-          name: this.config.name,
+          type: "subname",
+          name: handleReply.name,
           author: senderID,
           characters: event.body,
           messageID: info.messageID
@@ -104,10 +83,10 @@ module.exports.handleReply = async function({ api, event, args, handleReply, cli
     }
     case "subname": {
       api.unsendMessage(handleReply.messageID);
-      return api.sendMessage(`» Reply tin nhắn này để nhập tên phụ của bạn`, threadID, (error, info) => {
+      return api.sendMessage(`» এবার reply করুন আপনার background color।\n» রঙের তালিকা দেখতে /fbcover color লিখুন।`, threadID, (error, info) => {
         return global.client.handleReply.push({
-          type: 'color',
-          name: this.config.name,
+          type: "color",
+          name: handleReply.name,
           author: senderID,
           characters: handleReply.characters,
           name_s: event.body,
@@ -115,39 +94,15 @@ module.exports.handleReply = async function({ api, event, args, handleReply, cli
         })
       }, messageID);
     }
-
     case "color": {
       api.unsendMessage(handleReply.messageID);
-      return api.sendMessage(`» Reply tin nhắn này để nhập màu nền \n» Bạn có thể nhấn ${global.config.PREFIX}fbcover color để xem danh sách màu`, threadID, (error, info) => {
-        return global.client.handleReply.push({
-          type: 'create',
-          name: this.config.name,
-          author: senderID,
-          characters: handleReply.characters,
-          subname: event.body,
-          name_s: handleReply.name_s,
-          messageID: info.messageID
-        })
-      }, messageID)
-    }
-    
-    case "create": {
-      var idchar = handleReply.characters;
-      var name_ = handleReply.name_s;
-      var subname_ = handleReply.subname;
-      var color_ = event.body;
-      api.unsendMessage(handleReply.messageID);
-      return api.sendMessage(`Đang tạo ảnh ...`, event.threadID, async (error, info) => {
-        await new Promise(resolve => setTimeout(resolve, 3 * 1000));
-        var imag = (await axios.get(`https://api.nguyenmanh.name.vn/fbcover/v2?name=${encodeURIComponent(name_)}&id=${idchar}&subname=${encodeURIComponent(subname_)}&color=${encodeURIComponent(color_)}&apikey=KeyTest`, {
-          responseType: "stream"
-        })).data;
-        var msg = {
-          body: 'Ảnh bìa của bạn đây',
-          attachment: imag
-        }
-        return api.sendMessage(msg, event.threadID, event.messageID)
-      })
+      return api.sendMessage(`» Banner তৈরি করা হচ্ছে...`, threadID, async (error, info) => {
+        const idchar = handleReply.characters;
+        const name_ = handleReply.name_s;
+        const color_ = event.body;
+        const imag = (await axios.get(`https://api.nguyenmanh.name.vn/fbcover/v2?name=${encodeURIComponent(name_)}&id=${idchar}&subname=${encodeURIComponent(name_)}&color=${encodeURIComponent(color_)}&apikey=KeyTest`, { responseType: "stream" })).data;
+        return api.sendMessage({ body: "আপনার FB Cover এখানে:", attachment: imag }, threadID, messageID);
+      });
     }
   }
-    }
+}
