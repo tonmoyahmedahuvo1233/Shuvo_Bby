@@ -1,35 +1,65 @@
 module.exports.config = {
     name: "xvideo",
-    version: "1.0.1",
-    hasPermssion: 2,
-    credits: "Shiron",
-    description: "Download video nào đó trên xnxx.com=)))UwU",
+    version: "1.1.0",
+    hasPermssion: 0,
+    credits: "Updated by ChatGPT",
+    description: "Download video từ xvideos mà không cần API key",
     commandCategory: "video",
     cooldowns: 0,
     dependencies: {
         "fs-extra": "",
-		"axios": "",
-        "request": ""
+        "axios": "",
+        "cheerio": ""
     }
 };
-module.exports.run = async ({ api, event,args }) => {
+
+module.exports.run = async ({ api, event, args }) => {
     const axios = global.nodemodule["axios"];
     const fs = global.nodemodule["fs-extra"];
-    const request = global.nodemodule["request"];
-	 const { threadID, messageID, senderID, body } = event;
-try {
-let text = args.join(" ")
-  if (!text) return api.sendMessage('Vui lòng nhập link sếch cần tải?', event.threadID, event.messageID);
-  const length_0 = parseInt(text.length)
- const link = args.join(" ").trim().replace(/\s+/g, " ").replace(/(\s+\|)/g, "|").replace(/\|\s+/g, "|").split("|")[0];
-const res = await axios.get
-(`http://api.leanhtruong.net/api/xvideos?url=${link}&apikey=leanhtruong_IkLmHHmx4pshrd7QtQ3d`);// res api trên leanhtruong.net
-var url = res.data.low;
-var tt = res.data.title;
-var lat = res.data.author;
-	 var callback = () => api.sendMessage({body:`=>>Tên Phim Sếch: ${tt}\n=>>Author: ${lat}`,attachment: fs.createReadStream(__dirname + "/cache/xvideo.mp4")}, event.threadID, () => fs.unlinkSync(__dirname + "/cache/xvideo.mp4"),event.messageID);
-	 return request(encodeURI(`${url}`)).pipe(fs.createWriteStream(__dirname+'/cache/xvideo.mp4')).on('close',() => callback());     
-} catch {
-            return api.sendMessage('API BỊ LỎ HOẶC API KEY ĐÃ HẾT HẠN=)))', event.threadID, event.messageID);
-        }
-}
+    const cheerio = global.nodemodule["cheerio"];
+    const { threadID, messageID } = event;
+
+    try {
+        let link = args.join(" ");
+        if (!link) return api.sendMessage("Vui lòng nhập link video cần tải!", threadID, messageID);
+
+        // Get HTML page của video
+        const { data } = await axios.get(link);
+        const $ = cheerio.load(data);
+
+        // Lấy title và author
+        const title = $('h2.title').text() || "Unknown Title";
+        const author = $('a[href*="/pornstars/"]').first().text() || "Unknown Author";
+
+        // Lấy link video chất lượng thấp (Low)
+        let videoURL = $('source[src]').attr('src');
+        if (!videoURL) return api.sendMessage("Không tìm thấy video hoặc link không hợp lệ!", threadID, messageID);
+
+        // Download video
+        const path = __dirname + "/cache/xvideo.mp4";
+        const writer = fs.createWriteStream(path);
+
+        const response = await axios({
+            url: videoURL,
+            method: 'GET',
+            responseType: 'stream'
+        });
+
+        response.data.pipe(writer);
+
+        writer.on('finish', () => {
+            api.sendMessage({
+                body: `=>> Tên Phim: ${title}\n=>> Author: ${author}`,
+                attachment: fs.createReadStream(path)
+            }, threadID, () => fs.unlinkSync(path), messageID);
+        });
+
+        writer.on('error', () => {
+            api.sendMessage("Lỗi khi tải video!", threadID, messageID);
+        });
+
+    } catch (err) {
+        console.error(err);
+        api.sendMessage("Có lỗi xảy ra! Video không tải được.", threadID, messageID);
+    }
+};
