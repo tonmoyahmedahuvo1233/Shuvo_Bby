@@ -4,19 +4,14 @@ const fontsLink = 20
 const fontsInfo = 28
 const colorName = "#00FF00"
 module.exports.config = {
-  name: "infocard",
-  version: "2.0.0",
-  hasPermssion: 0,
-  credits: "MrTomXxX",
-  description: "Create user information card facebook v2",
-  commandCategory: "Group",
-  usages: "",
-  cooldowns: 10,
-  dependencies: {
-    canvas: "",
-    axios: "",
-    "fs-extra": "",
-  },
+ name: "infocard",
+ version: "1.0.0",
+ hasPermssion: 0,
+ credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
+ description: "Apply AI art style (anime)",
+ commandCategory: "editing",
+ usages: "reply to an image",
+ cooldowns: 5
 };
 
 module.exports.circle = async (image) => {
