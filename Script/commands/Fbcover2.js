@@ -8,7 +8,7 @@ module.exports.config = {
     hasPermssion: 0,
     credits: "Anup Kumar",
     description: "banner",
-    commandCategory: "game",
+    commandCategory: "FUN",
     usages: "",
     cooldowns: 5
   };
