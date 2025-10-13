@@ -4,7 +4,7 @@ module.exports.config = {
   hasPermssion: 0,
   credits: "MrTomXxX",
   description: "generate a custom facebook cover.",
-  commandCategory: "generate-image",
+  commandCategory: "FUN",
   cooldowns: 0,
   usage: "<blank>",
   dependencies: {
