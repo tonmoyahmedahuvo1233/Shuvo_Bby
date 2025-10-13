@@ -1,9 +1,9 @@
 module.exports.config = {
-  name: "eat",
+  name: "khanki",
   version: "1.0",
-  hasPermssion: 0,
+  hasPermssion: 2,
   credits: "𝗦𝗵𝗮𝗵𝗮𝗱𝗮𝘁 𝗦𝗔𝗛𝗨 (Modified by Rahat)",
-  description: "eat লিখে @mention করলে cute voice সহ funny reply দিবে 😁",
+  description: "khanki লিখে @mention করলে cute voice সহ funny reply দিবে 😁",
   commandCategory: "fun",
   usages: "-eat @mention",
   cooldowns: 5
@@ -14,7 +14,6 @@ const fs = require("fs");
 const path = require("path");
 
 const voiceLinks = [
-  "https://files.catbox.moe/g6dysb.mp3",
   "https://files.catbox.moe/ypv6z9.mp3",
   "https://files.catbox.moe/8u6l58.mp3"
 ];
@@ -25,7 +24,7 @@ module.exports.run = async ({ api, event }) => {
 
   // যদি কেউ mention না করে
   if (mentionIDs.length === 0) {
-    return api.sendMessage("😒 কাউকে mention করে খাও ভাই, একা একা খাওয়া যায় নাকি!", threadID, messageID);
+    return api.sendMessage("Boss কোন এক বোকাচোদাকে mention করো😗🤢", threadID, messageID);
   }
 
   const targetID = mentionIDs[0];
@@ -61,7 +60,7 @@ module.exports.run = async ({ api, event }) => {
 
     // শেষে mention করে reply দেবে
     api.sendMessage({
-      body: `😋 ${mentions[targetID]} আরো খাবি 🤣😁`,
+      body: `${mentions[targetID]} খানকি-মাগি তোর জন্য এই দুইটা ভয়েস😗🤣\nরাহাদ বসের বদলে চুদে দিলাম🤢😗`,
       mentions: [{
         tag: mentions[targetID],
         id: targetID
@@ -70,6 +69,6 @@ module.exports.run = async ({ api, event }) => {
 
   } catch (error) {
     console.error(error);
-    api.sendMessage("😢 কিছু একটা সমস্যা হয়েছে ভাই, আবার চেষ্টা করো!", threadID, messageID);
+    api.sendMessage("😢 কিছু একটা সমস্যা হয়েছে রাহাদ বস, আবার চেষ্টা করো!", threadID, messageID);
   }
 };
