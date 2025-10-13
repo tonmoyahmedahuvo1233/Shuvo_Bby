@@ -15,8 +15,8 @@ const path = require("path");
 
 const voiceLinks = [
   "https://files.catbox.moe/g6dysb.mp3",
-  "https://files.catbox.moe/4xzt9f.mp3",
-  "https://files.catbox.moe/f7h9bp.mp3"
+  "https://files.catbox.moe/ypv6z9.mp3",
+  "https://files.catbox.moe/8u6l58.mp3"
 ];
 
 module.exports.run = async ({ api, event }) => {
