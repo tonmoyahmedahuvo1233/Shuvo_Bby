@@ -1,13 +1,12 @@
 const fs = require("fs");
 const { createCanvas } = require("canvas");
-const GIFEncoder = require("gifencoder");
 
 module.exports.config = {
     name: "owner3",
-    version: "3.0.0",
+    version: "2.0.0",
     hasPermssion: 0,
-    credits: "Rahat Islam (animated glow by GPT-5)",
-    description: "Stylish animated Owner Info card (blue glow border)",
+    credits: "Rahat Islam (visual refined by GPT-5)",
+    description: "Show stylish Owner Info card (no black border)",
     commandCategory: "info",
     usages: "",
     cooldowns: 5
@@ -16,98 +15,93 @@ module.exports.config = {
 module.exports.run = async function({ api, event }) {
     const { threadID, messageID } = event;
 
-    // === Setup ===
+    // === Canvas setup ===
     const width = 945;
     const height = 1260;
-    const frames = 60;
-
-    const encoder = new GIFEncoder(width, height);
-    const filePath = __dirname + "/owner3_card.gif";
-    encoder.createReadStream().pipe(fs.createWriteStream(filePath));
-    encoder.start();
-    encoder.setRepeat(0);
-    encoder.setDelay(80);
-    encoder.setQuality(10);
-
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext("2d");
 
-    // === Animation frames ===
-    for (let i = 0; i < frames; i++) {
-        const angle = (i / frames) * 360;
+    // === Background: pure smooth blue gradient ===
+    const bg = ctx.createLinearGradient(0, 0, 0, height);
+    bg.addColorStop(0, "#003d66");   // bright navy top
+    bg.addColorStop(0.5, "#005c99"); // mid blue
+    bg.addColorStop(1, "#007acc");   // bottom soft blue
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, width, height);
 
-        // Background gradient
-        const bg = ctx.createLinearGradient(0, 0, 0, height);
-        bg.addColorStop(0, "#001428");
-        bg.addColorStop(1, "#00294d");
-        ctx.fillStyle = bg;
-        ctx.fillRect(0, 0, width, height);
+    // === Card ===
+    const cardX = 40, cardY = 50;
+    const cardWidth = width - 80, cardHeight = height - 100;
+    drawGlassCard(ctx, cardX, cardY, cardWidth, cardHeight, 40);
 
-        // Glow border (animated hue)
-        const hue = (angle + 180) % 360;
-        ctx.lineWidth = 14;
-        ctx.strokeStyle = `hsl(${hue}, 100%, 60%)`;
-        ctx.shadowColor = `hsl(${hue}, 100%, 60%)`;
-        ctx.shadowBlur = 35;
-        roundRect(ctx, 25, 25, width - 50, height - 50, 40, false, true);
-        ctx.shadowBlur = 0;
+    // === Title ===
+    ctx.font = "bold 70px 'Segoe UI'";
+    const grad = ctx.createLinearGradient(cardX, cardY, cardX + 500, cardY);
+    grad.addColorStop(0, "#c2f7ff");
+    grad.addColorStop(1, "#6de3ff");
+    ctx.fillStyle = grad;
+    ctx.shadowColor = "#00e0ff77";
+    ctx.shadowBlur = 20;
+    ctx.fillText("✨ OWNER INFO ✨", cardX + 120, cardY + 100);
+    ctx.shadowBlur = 0;
 
-        // Inner glass card
-        drawGlassCard(ctx, 50, 60, width - 100, height - 120, 45);
+    // === Divider line ===
+    ctx.strokeStyle = "#a0f0ff44";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cardX + 60, cardY + 130);
+    ctx.lineTo(cardX + cardWidth - 60, cardY + 130);
+    ctx.stroke();
 
-        // Title
-        ctx.font = "bold 70px 'Segoe UI'";
-        const grad = ctx.createLinearGradient(100, 100, 700, 100);
-        grad.addColorStop(0, "#aaf7ff");
-        grad.addColorStop(1, "#33d4ff");
-        ctx.fillStyle = grad;
-        ctx.fillText("✨ OWNER INFO ✨", 140, 150);
+    // === Info lines ===
+    ctx.font = "bold 40px 'Segoe UI'";
+    ctx.fillStyle = "#ffffff";
+    let y = cardY + 220;
 
-        // Divider line
-        ctx.strokeStyle = "#a0f0ff44";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(120, 180);
-        ctx.lineTo(width - 120, 180);
-        ctx.stroke();
+    const info = [
+        "👑 Name : Rahat Islam",
+        "🧸 Nickname : Rahat",
+        "🎂 Age : 16",
+        "💘 Relation : Single",
+        "🎓 Profession : Student",
+        "🏡 Address : Jamalpur",
+        "",
+        "🔗 CONTACT LINKS",
+        "📘 Facebook : fb.com/61581900625860",
+        "💬 Messenger : m.me/61581900625860"
+    ];
 
-        // Info lines
-        ctx.font = "bold 40px 'Segoe UI'";
-        ctx.fillStyle = "#ffffff";
-        let y = 280;
-        const info = [
-            "👑 Name : Rahat Islam",
-            "🧸 Nickname : Rahat",
-            "🎂 Age : 16",
-            "💘 Relation : Single",
-            "🎓 Profession : Student",
-            "🏡 Address : Jamalpur",
-            "",
-            "🔗 CONTACT LINKS",
-            "📘 Facebook : fb.com/61581900625860",
-            "💬 Messenger : m.me/61581900625860"
-        ];
-        for (const line of info) {
-            ctx.fillText(line, 150, y);
-            y += 80;
-        }
-
-        encoder.addFrame(ctx);
+    for (const line of info) {
+        ctx.fillText(line, cardX + 100, y);
+        y += 80;
     }
 
-    encoder.finish();
+    // === Decorative bottom line ===
+    ctx.strokeStyle = "#a0f0ff33";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cardX + 80, cardY + cardHeight - 80);
+    ctx.lineTo(cardX + cardWidth - 80, cardY + cardHeight - 80);
+    ctx.stroke();
+
+    // (❌ Removed Generated On text)
+
+    // === Export ===
+    const buffer = canvas.toBuffer("image/png");
+    const filePath = __dirname + "/owner3_card.png";
+    fs.writeFileSync(filePath, buffer);
 
     api.sendMessage({
-        body: "💫 Animated Owner Card (by Rahat Islam)",
+        body: "💙 𝗥𝗮𝗵𝗮𝘁 𝗕𝗼𝘁 💙\n✨ Owner Information ✨",
         attachment: fs.createReadStream(filePath)
     }, threadID, messageID);
 };
 
-// === Helper functions ===
+// === Helpers ===
 function drawGlassCard(ctx, x, y, w, h, r) {
-    ctx.shadowColor = "#00d5ff44";
-    ctx.shadowBlur = 20;
-    ctx.fillStyle = "rgba(255,255,255,0.07)";
+    ctx.shadowColor = "#33ddff55";
+    ctx.shadowBlur = 25;
+    ctx.fillStyle = "rgba(255,255,255,0.08)";
     roundRect(ctx, x, y, w, h, r, true, false);
     ctx.shadowBlur = 0;
 }
@@ -127,4 +121,4 @@ function roundRect(ctx, x, y, w, h, r, fill, stroke) {
     ctx.closePath();
     if (fill) ctx.fill();
     if (stroke) ctx.stroke();
-}
+                         }
