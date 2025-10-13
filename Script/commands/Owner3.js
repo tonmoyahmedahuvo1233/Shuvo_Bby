@@ -3,10 +3,10 @@ const { createCanvas } = require("canvas");
 
 module.exports.config = {
     name: "owner3",
-    version: "1.0.0",
+    version: "1.0.1",
     hasPermssion: 0,
-    credits: "Rahat Islam",
-    description: "Show beautiful Owner Info card",
+    credits: "Rahat Islam (designed by GPT-5)",
+    description: "Show beautiful Owner Info card with dark-blue theme",
     commandCategory: "info",
     usages: "",
     cooldowns: 5
@@ -15,44 +15,46 @@ module.exports.config = {
 module.exports.run = async function({ api, event }) {
     const { threadID, messageID } = event;
 
-    const width = 1600;
-    const height = 1000;
+    // Canvas size 945x1260
+    const width = 945;
+    const height = 1260;
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext("2d");
 
-    // === 🌈 Background Gradient ===
+    // === 🎨 Background: Dark → Deep Blue Gradient ===
     const bgGradient = ctx.createLinearGradient(0, 0, width, height);
-    bgGradient.addColorStop(0, "#1b0a2a");
-    bgGradient.addColorStop(1, "#3d1e60");
+    bgGradient.addColorStop(0, "#0a0a14");   // dark navy
+    bgGradient.addColorStop(0.5, "#0c1a3a"); // deep blue midtone
+    bgGradient.addColorStop(1, "#10284a");   // lighter bottom tone
     ctx.fillStyle = bgGradient;
     ctx.fillRect(0, 0, width, height);
 
-    // === 💎 Glass Card ===
-    const cardX = 100, cardY = 100;
-    const cardWidth = width - 200, cardHeight = height - 200;
-    drawGlassCard(ctx, cardX, cardY, cardWidth, cardHeight, 40);
+    // === 💠 Glass Card (semi-transparent) ===
+    const cardX = 70, cardY = 90;
+    const cardWidth = width - 140, cardHeight = height - 180;
+    drawGlassCard(ctx, cardX, cardY, cardWidth, cardHeight, 35);
 
     // === ✨ Title ===
-    ctx.font = "bold 70px 'Segoe UI'";
-    const titleGrad = ctx.createLinearGradient(cardX, cardY, cardX + 600, cardY);
-    titleGrad.addColorStop(0, "#ff66cc");
-    titleGrad.addColorStop(1, "#ff99ff");
+    ctx.font = "bold 65px 'Segoe UI'";
+    const titleGrad = ctx.createLinearGradient(cardX, cardY, cardX + 500, cardY);
+    titleGrad.addColorStop(0, "#00e0ff");
+    titleGrad.addColorStop(1, "#00baff");
     ctx.fillStyle = titleGrad;
-    ctx.shadowColor = "#ff99ff88";
+    ctx.shadowColor = "#00baff88";
     ctx.shadowBlur = 25;
-    ctx.fillText("✨ OWNER INFO ✨", cardX + 200, cardY + 90);
+    ctx.fillText("✨ OWNER INFO ✨", cardX + 150, cardY + 90);
     ctx.shadowBlur = 0;
 
     // === Divider ===
-    ctx.strokeStyle = "#ffffff22";
+    ctx.strokeStyle = "#00baff33";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(cardX + 80, cardY + 120);
-    ctx.lineTo(cardX + cardWidth - 80, cardY + 120);
+    ctx.moveTo(cardX + 60, cardY + 120);
+    ctx.lineTo(cardX + cardWidth - 60, cardY + 120);
     ctx.stroke();
 
     // === ℹ️ Owner Info Text ===
-    ctx.font = "bold 40px 'Segoe UI'";
+    ctx.font = "bold 38px 'Segoe UI'";
     ctx.fillStyle = "#ffffff";
     let textY = cardY + 200;
 
@@ -70,22 +72,22 @@ module.exports.run = async function({ api, event }) {
     ];
 
     for (let line of lines) {
-        ctx.fillText(line, cardX + 150, textY);
+        ctx.fillText(line, cardX + 100, textY);
         textY += 70;
     }
 
-    // === 🌸 Decorative Line Bottom ===
-    ctx.strokeStyle = "#ff99ff55";
+    // === Decorative bottom line ===
+    ctx.strokeStyle = "#00baff55";
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(cardX + 100, cardY + cardHeight - 80);
-    ctx.lineTo(cardX + cardWidth - 100, cardY + cardHeight - 80);
+    ctx.moveTo(cardX + 80, cardY + cardHeight - 90);
+    ctx.lineTo(cardX + cardWidth - 80, cardY + cardHeight - 90);
     ctx.stroke();
 
-    // === 🕒 Timestamp ===
+    // === ⏰ Timestamp ===
     ctx.font = "italic 26px 'Segoe UI'";
-    ctx.fillStyle = "#ffccee";
-    ctx.fillText(`Generated on: ${new Date().toLocaleString()}`, cardX + 120, height - 60);
+    ctx.fillStyle = "#66e0ff";
+    ctx.fillText(`Generated on: ${new Date().toLocaleString()}`, cardX + 90, height - 60);
 
     // === Save & Send ===
     const buffer = canvas.toBuffer("image/png");
@@ -93,16 +95,16 @@ module.exports.run = async function({ api, event }) {
     fs.writeFileSync(filePath, buffer);
 
     api.sendMessage({
-        body: "💖 𝗢𝗪𝗡𝗘𝗥 𝗜𝗡𝗙𝗢 💖",
+        body: "💙 𝗥𝗮𝗵𝗮𝘁 𝗕𝗼𝘁 💙\n✨ Owner Information Card ✨",
         attachment: fs.createReadStream(filePath)
     }, threadID, messageID);
 };
 
 // 🔹 Helper Functions 🔹
 function drawGlassCard(ctx, x, y, w, h, r) {
-    ctx.shadowColor = "#ff99ff55";
-    ctx.shadowBlur = 40;
-    ctx.fillStyle = "rgba(255,255,255,0.08)";
+    ctx.shadowColor = "#00baff55";
+    ctx.shadowBlur = 35;
+    ctx.fillStyle = "rgba(255,255,255,0.05)";
     roundRect(ctx, x, y, w, h, r, true, false);
     ctx.shadowBlur = 0;
 }
@@ -122,4 +124,4 @@ function roundRect(ctx, x, y, w, h, r, fill, stroke) {
     ctx.closePath();
     if (fill) ctx.fill();
     if (stroke) ctx.stroke();
-  }
+}
