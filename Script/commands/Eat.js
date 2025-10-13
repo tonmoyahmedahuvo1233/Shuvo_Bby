@@ -1,66 +1,75 @@
-const fs = require("fs");
-const path = require("path");
-
 module.exports.config = {
   name: "eat",
-  version: "1.1",
+  version: "1.0",
   hasPermssion: 0,
   credits: "𝗦𝗵𝗮𝗵𝗮𝗱𝗮𝘁 𝗦𝗔𝗛𝗨 (Modified by Rahat)",
-  description: "eat লিখে @mention করলে নিজের mp3 ভয়েস পাঠাবে 😁",
+  description: "eat লিখে @mention করলে cute voice সহ funny reply দিবে 😁",
   commandCategory: "fun",
   usages: "-eat @mention",
   cooldowns: 5
 };
 
+const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
+
+const voiceLinks = [
+  "https://files.catbox.moe/g6dysb.mp3",
+  "https://files.catbox.moe/4xzt9f.mp3",
+  "https://files.catbox.moe/f7h9bp.mp3"
+];
+
 module.exports.run = async ({ api, event }) => {
   const { threadID, messageID, mentions } = event;
   const mentionIDs = Object.keys(mentions);
 
+  // যদি কেউ mention না করে
   if (mentionIDs.length === 0) {
     return api.sendMessage("😒 কাউকে mention করে খাও ভাই, একা একা খাওয়া যায় নাকি!", threadID, messageID);
   }
 
   const targetID = mentionIDs[0];
-  const targetTag = mentions[targetID].replace("@", "");
-
-  // তোমার নিজের ফাইল লোকেশন
-  const voicesDir = path.join(__dirname, "voices");
-  const voiceFiles = [
-    path.join(voicesDir, "Khan.mp4.mp3"),
-    path.join(voicesDir, "Khan2.mp4.mp3")
-  ];
+  const targetName = mentions[targetID].replace("@", "");
+  const cacheDir = path.join(__dirname, 'cache');
+  if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
 
   try {
-    // প্রথমে দুইটা ভয়েস একে একে পাঠাবে
-    for (let i = 0; i < voiceFiles.length; i++) {
-      const voicePath = voiceFiles[i];
-      if (fs.existsSync(voicePath)) {
-        await new Promise((resolve) => {
-          api.sendMessage(
-            { attachment: fs.createReadStream(voicePath) },
-            threadID,
-            () => resolve(),
-            messageID
-          );
+    // ২-৩ টা voice clip একে একে পাঠানো
+    for (let i = 0; i < voiceLinks.length; i++) {
+      const url = voiceLinks[i];
+      const filePath = path.join(cacheDir, `voice${i}.mp3`);
+      const response = await axios({
+        method: 'GET',
+        url,
+        responseType: 'stream'
+      });
+      const writer = fs.createWriteStream(filePath);
+      response.data.pipe(writer);
+
+      await new Promise((resolve, reject) => {
+        writer.on('finish', () => {
+          api.sendMessage({
+            attachment: fs.createReadStream(filePath)
+          }, threadID, () => {
+            fs.unlink(filePath, () => {});
+            resolve();
+          });
         });
-      } else {
-        console.error("Voice file missing:", voicePath);
-      }
+        writer.on('error', reject);
+      });
     }
 
-    // শেষে mention করে funny reply দিবে
+    // শেষে mention করে reply দেবে
     api.sendMessage({
       body: `😋 ${mentions[targetID]} আরো খাবি 🤣😁`,
-      mentions: [
-        {
-          tag: mentions[targetID],
-          id: targetID
-        }
-      ]
+      mentions: [{
+        tag: mentions[targetID],
+        id: targetID
+      }]
     }, threadID, messageID);
 
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     api.sendMessage("😢 কিছু একটা সমস্যা হয়েছে ভাই, আবার চেষ্টা করো!", threadID, messageID);
   }
 };
