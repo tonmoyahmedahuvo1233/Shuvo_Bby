@@ -4,7 +4,7 @@ module.exports.config = {
     hasPermssion: 0,
     credits: "Kamisato Ayaka",
     description: "Chơi kiểu chó với đứa được tag",
-    commandCategory: "Edit-IMG",
+    commandCategory: "😈যুদ্ধ_করার_কমান্ড😈",
     usages: "[tag]",
     cooldowns: 5,
     dependencies: {
@@ -70,7 +70,7 @@ module.exports.run = async function ({ event, api, args }) {
     if (!mention) return api.sendMessage("Vui lòng tag 1 người", threadID, messageID);
     else {
         var one = senderID, two = mention;
-        return makeImage({ one, two }).then(path => api.sendMessage({ body: "🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰\n ${mentionName} ➕ You🫵🏻 = ভাবো যদি doggy হতে তাহলে কেমন দেখা যাইতো🐸🙂",
+        return makeImage({ one, two }).then(path => api.sendMessage({ body: "🔰𝗥𝗮𝗵𝗮𝘁_𝗕𝗼𝘁🔰\n ${mentions[targetID]} ➕ You🫵🏻 = ভাবো যদি doggy হতে তাহলে কেমন দেখা যাইতো🐸🙂",
             mentions: [{
           tag: tag,
           id: mention
